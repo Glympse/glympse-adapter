@@ -140,25 +140,38 @@ define(function(require, exports, module)
 
 		function processCardData(resp)
 		{
-			var result = { status: false };
-
 			attempts++;
 
-//			try
-//			{
-				if (resp && resp.response && resp.result === 'ok')
+			try
+			{
+				if (resp)
 				{
-					//dbg('Got card data', resp);
-					loaded = true;
-					that.setData(resp.response);
-					controller.notify(m.CardReady, idCard);
-					return;
+					if (resp.response && resp.result === 'ok')
+					{
+						//dbg('Got card data', resp);
+						loaded = true;
+						that.setData(resp.response);
+						controller.notify(m.CardReady, idCard);
+						return;
+					}
+					else if (resp.meta && resp.meta.error)
+					{
+						// Invite is invalid or has been revoked, in
+						// either case, we cannot continue loading this
+						// card, so bail immediately
+						if (resp.meta.error === 'failed_to_decode')
+						{
+							loaded = false;
+							controller.notify(m.CardReady, idCard);
+							return;
+						}
+					}
 				}
-//			}
-//			catch (e)
-//			{
-//				dbg('Error parsing card', e);
-//			}
+			}
+			catch (e)
+			{
+				dbg('Error parsing card', e);
+			}
 
 			//dbg('attempt: ' + attempts + ', last data', data);
 
@@ -174,8 +187,6 @@ define(function(require, exports, module)
 			}
 
 			dbg('Max attempts: (' + attempts + ') -- ' + ((data && data.result) || 'data=null'));
-			//result.info = { status: 'max_attempts', lastResult: (data && data.result) };
-			//controller.notify(Account.InitComplete, result);
 			controller.notify(m.CardReady, idCard);
 		}
 

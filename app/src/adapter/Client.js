@@ -29,6 +29,7 @@ define(function(require, exports, module)
 		var cfgMonitor = { dbg: cfgApp.dbg, viewer: elementViewer };
 		var invitesCard;
 		var invitesGlympse;
+		var invitesReferences = { };
 		var glympseLoader;
 		var mapCardInvites = { };
 		var viewerMonitor;
@@ -254,7 +255,21 @@ define(function(require, exports, module)
 
 						if (!card.isLoaded())
 						{
-							console.log('Error loading card "' + idCard + '"');
+							// If card failed to load properly, fallback to the
+							// original Glympse invite to render last-known state
+							var reference = invitesReferences[idCard];
+							var idx = invitesCard.indexOf(idCard);
+							console.log('Error loading card "' + idCard + '" ---> reference: ' + reference + ', idx=' + idx);
+							if (reference)
+							{
+								invitesGlympse.push(reference);
+							}
+
+							if (idx >= 0)
+							{
+								invitesCard.splice(idx, 1);
+							}
+
 							continue;
 						}
 
@@ -288,20 +303,22 @@ define(function(require, exports, module)
 
 				case m.InviteError:
 				{
-					dbg('Invite loading error', args.getError());
+					//dbg('Invite loading error', args);
 					sendEvent(msg, args);
 					break;
 				}
 
 				case m.InviteReady:
 				{
-					//dbg('InviteReady: ' + args.getIdInvite() + ' -- isLoaded=' + args.isLoaded());
-					sendEvent(msg, args);
 					if (!args.isLoaded())
 					{
 						dbg('Invite error state', args.getError());
-						return null;
+						sendEvent(m.InviteError, args);
+					//	return null;
 					}
+
+					dbg('InviteReady: ' + args.getIdInvite() + ' -- isLoaded=' + args.isLoaded());
+					sendEvent(msg, args);
 
 					idCard = args.getReference();
 					//dbg('Has reference: "' + idCard + '"');
@@ -309,6 +326,9 @@ define(function(require, exports, module)
 					{
 						if (invitesCard.indexOf(idCard) < 0)
 						{
+							// Track back in case of expired card invite
+							invitesReferences[idCard] = args.getIdInvite();
+
 							progressTotal += (5 + 1 * 2) - 2;
 							invitesCard.push(idCard);
 							sendEvent(m.AdapterInit, { isCard: true });

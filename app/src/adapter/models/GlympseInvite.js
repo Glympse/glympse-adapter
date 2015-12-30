@@ -6,13 +6,14 @@ define(function(require, exports, module)
 	var Defines = require('glympse-adapter/GlympseAdapterDefines');
 	var m = Defines.MSG;
 	var cOauthToken = 'oauth_token';
+	var cModuleId = 'GlympseInvite';
 
 
 	// Exported class
 	function GlympseInvite(controller, idInvite, account, cfg)
 	{
 		// consts
-		var dbg = lib.dbg('GlympseInvite', cfg.dbg);
+		var dbg = lib.dbg(cModuleId, cfg.dbg);
 		var svr = (cfg.svcGlympse || '//api.glympse.com/v2/');
 		var inviteUrl = (svr + 'invites/' + idInvite);
 		var cMaxAttempts = 3;
@@ -31,7 +32,6 @@ define(function(require, exports, module)
 		var props = [ 'first'
 					, 'last'
 					, 'next'
-					, 'reference'
 					, 'properties'
 					, 'type'
 					];
@@ -61,6 +61,12 @@ define(function(require, exports, module)
 		this.getData = function()
 		{
 			return data;
+		};
+
+		// NOTE: make available in case of invalid invite
+		this.getReference = function()
+		{
+			return data && data.reference;
 		};
 
 		this.setData = function(val)
@@ -96,9 +102,14 @@ define(function(require, exports, module)
 			return true;
 		};
 
+		this.toString = function()
+		{
+			return '[' + cModuleId + ']: ' + JSON.stringify(data);
+		};
+
 		this.toJSON = function()
 		{
-			return data;
+			return data || error;
 		};
 
 
@@ -145,7 +156,8 @@ define(function(require, exports, module)
 					}
 					else
 					{
-						error = data.meta;
+						error = data.meta || {};
+						error.id = lib.normalizeInvite(idInvite);
 					}
 
 					controller.notify(m.InviteReady, that);

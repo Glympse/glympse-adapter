@@ -62,29 +62,21 @@ define(function(require, exports, module)
 				{
 					var error = args.getError();
 
-					if (!error)
+					if (error && error.error === 'oauth_token')
 					{
-						controller.notify(msg, args);
-					}
-					else
-					{
-						if (error.error === 'oauth_token')
+						if (error.error_detail.indexOf('expired') >= 0)
 						{
-							if (error.error_detail.indexOf('expired') >= 0)
-							{
-								account.handleExpiredToken();
-							}
-							else
-							{
-								account.handleInvalidToken();
-							}
+							account.handleExpiredToken();
 						}
 						else
 						{
-							controller.notify(m.InviteError, args);
+							account.handleInvalidToken();
 						}
+
+						break;
 					}
 
+					controller.notify(msg, args);
 					break;
 				}
 

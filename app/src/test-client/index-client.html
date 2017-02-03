@@ -8,9 +8,25 @@
         <script type=text/javascript src="//dev.glympse.com/js/loader/latest/jquery.glympser.min.js"></script>
 
 		<!-- process:remove:dev -->
-		<script type="text/javascript" src="src/app.js"></script>
+		<!--<script type="text/javascript" src="src/app.js"></script>-->
 		<!-- /process -->
+		<script src="context.js"></script>
+		<script type="text/javascript">
+			// Configure our Karma and set up bindings
+			%CLIENT_CONFIG%
+			window.__karma__.setupContext(window);
 
+			// All served files with the latest timestamps
+			%MAPPINGS%
+		</script>
+		<!-- Dynamically replaced with <script> tags -->
+		%SCRIPTS%
+		<script type="text/javascript">
+			setTimeout(function () {
+				//todo: need to move this call to OnLoad event of glympser
+				window.__karma__.loaded();
+			}, 10000)
+		</script>
         <!-- process:remove:dist -->
         <script type="text/javascript" src="../../lib/requirejs/require.js" data-main="requireConfig-client"></script>
         <!-- /process -->

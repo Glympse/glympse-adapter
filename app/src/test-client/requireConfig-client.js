@@ -11,7 +11,7 @@ require.config({
         MessageChannel: '../../lib/MessageChannel.js/lib/message_channel',
         oasis: '../common/oasis',
         rsvp: '../common/rsvp',
-        'glympse-adapter': '../.'
+        'glympse-adapter': '../../src'
     },
     packages: [
 

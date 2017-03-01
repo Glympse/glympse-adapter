@@ -36,6 +36,7 @@ define(function(require, exports, module)
 		var account = {};
 
 		var apiKey = cfg.apiKey;
+		var hashApiKey = lib.stringHashCode(apiKey);
 
 		var urlCreate = (svr + 'account/create');
 		var urlLogin = (svr + 'account/login');
@@ -272,7 +273,7 @@ define(function(require, exports, module)
 
 		function saveSettings()
 		{
-			currentEnvKeys[apiKey] = currentKeySettings;
+			currentEnvKeys[hashApiKey] = currentKeySettings;
 			settings[idEnvironment] = currentEnvKeys;
 			lib.setCfgVal(cAccountInfo, settings);
 		}
@@ -281,7 +282,7 @@ define(function(require, exports, module)
 		{
 			settings = lib.getCfgVal(cAccountInfo) || {};
 			currentEnvKeys = settings[idEnvironment] || {};
-			currentKeySettings = currentEnvKeys[apiKey] || {};
+			currentKeySettings = currentEnvKeys[hashApiKey] || {};
 		}
 
 		function deleteSettings()

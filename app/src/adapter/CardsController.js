@@ -615,7 +615,8 @@ define(function(require, exports, module)
 				});
 		}
 
-		function getCardActivity(config) {
+		function getCardActivity(config)
+		{
 			if (!config || !config.cardId)
 			{
 				dbg('CardId param is mandatory!', config, 3);
@@ -623,14 +624,32 @@ define(function(require, exports, module)
 			}
 
 			var cardId = config.cardId,
-				card = cardsIndex[cardId],
-				fromTS = config.fromTS,
-				toTS = config.toTS;
+				card = cardsIndex[cardId];
 
-			if (card)
+			if (!card)
 			{
-				updateCard(card, fromTS, toTS);
+				dbg('Card with id=' + cardId + ' not found!', config, 3);
+				return;
 			}
+
+			var requestConfig = updateCard(card, config.fromTS, config.toTS);
+
+			ajax.makeRequest(
+				{
+					url: (svr + requestConfig.url),
+					type: requestConfig.method
+				},
+				account
+			)
+				.then(function(result)
+				{
+					if (result.status)
+					{
+						result.cardId = cardId;
+					}
+
+					controller.notify(m.CardActivityStatus, result);
+				});
 		}
 	}
 

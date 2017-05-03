@@ -487,6 +487,7 @@ using GA in host-mode) that are sent by the adapter (defined in the
   creation failed with `response.error` message and `status: false`
 - `CardsJoinRequestCancelStatus`: Indicates that Card join request has been cancelled or
   cancelling failed with `response.error` message and `status: false`
+- `CardActivityStatus`: Returns the list of card activities for the requested period
 - `CardsActiveJoinRequestsStatus`: Returns the list of active join card requests in `response` property
 - `CardRemoveMemberStatus`: Indicates that Card member was removed or removing failed with `response.error` message and `status: false`
 - `CardsLocationRequestStatus`: Indicates that location request was created or creation failed with `response.error` message and `status: false`
@@ -728,7 +729,7 @@ Access to these endpoints can be made via the `cards` property of the adapter in
   - `config.cardId`: Card id to send request
   - `config.memberList`: List of member_ids to send requests. Not used if scope = "all".
 - `activity(config)`: Requests card's activities for the specified period ([read more](https://developer.glympse.com/docs/core/api/reference/cards/id/activity/get)). 
-  Can send a number of `CardUpdated` events as appropriate (Read more about this event [here](#adapter-messagesevents)).
+  Returns `CardActivityStatus` with the list of activities (Read more about this event [here](#adapter-messagesevents)).
   - `config.cardId`: Card id to request activities
   - `config.fromTS`: start timestamp
   - `config.toTS`: end timestamp

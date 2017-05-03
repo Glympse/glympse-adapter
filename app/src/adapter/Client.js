@@ -487,6 +487,7 @@ define(function(require, exports, module)
 				case m.UserInfoStatus:
 				case m.CardsJoinRequestStatus:
 				case m.CardsJoinRequestCancelStatus:
+				case m.CardActivityStatus:
 				case m.CardsActiveJoinRequestsStatus:
 				case m.CardRemoveMemberStatus:
 				case m.CardsLocationRequestStatus:

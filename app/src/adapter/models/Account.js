@@ -282,7 +282,22 @@ define(function(require, exports, module)
 		{
 			settings = lib.getCfgVal(cAccountInfo) || {};
 			currentEnvKeys = settings[idEnvironment] || {};
-			currentKeySettings = currentEnvKeys[hashApiKey] || {};
+
+			// check for settings under apiKey first to not break old accounts
+			currentKeySettings = currentEnvKeys[apiKey];
+
+			if (currentKeySettings)
+			{
+				dbg('old-fashioned settings detected, will be migrated to the new format');
+
+				// save in new format
+				delete currentEnvKeys[apiKey];
+				saveSettings();
+			}
+			else
+			{
+				currentKeySettings = currentEnvKeys[hashApiKey] || {};
+			}
 		}
 
 		function deleteSettings()

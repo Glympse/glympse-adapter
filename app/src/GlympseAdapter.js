@@ -166,7 +166,9 @@ define(function(require, exports, module)
 	// Global namespace registration
 	(function(w) {
 		var g = w.glympse || {};
+		/* eslint-disable no-unused-expressions */
 		g.GlympseAdapter || (g.GlympseAdapter = GlympseAdapter);
+		/* eslint-enable no-unused-expressions */
 		w.glympse = g;
 	})(window);
 

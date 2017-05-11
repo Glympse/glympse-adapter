@@ -6,6 +6,7 @@ define(function(require, exports, module)
 	var ajax = require('glympse-adapter/lib/ajax');
 	var Defines = require('glympse-adapter/GlympseAdapterDefines');
 	var imageProcessing = require('glympse-adapter/lib/image');
+	var md5 = require('glympse-adapter/lib/md5');
 
 	var m = Defines.MSG;
 	var REQUEST_TYPES = Defines.CARDS.REQUEST_TYPES;
@@ -36,7 +37,7 @@ define(function(require, exports, module)
 		var account = {};
 
 		var apiKey = cfg.apiKey;
-		var hashApiKey = lib.stringHashCode(apiKey);
+		var hashApiKey = md5(apiKey);
 
 		var urlCreate = (svr + 'account/create');
 		var urlLogin = (svr + 'account/login');

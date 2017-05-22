@@ -58,7 +58,7 @@ define(function(require, exports, module)
 
 		cfgAdapter.apiKey = apiKey;
 		cfgAdapter.dbg = cfgApp.dbg || cfgAdapter.dbg;
-		cfgAdapter.svcGlympse = (cfgAdapter.svcGlympse || ('//api.' + ((cfgAdapter.sandbox) ? 'sandbox.' : '') + 'glympse.com/v2/'));
+		cfgAdapter.svcGlympse = (cfgAdapter.svcGlympse || ('https://api.' + ((cfgAdapter.sandbox) ? 'sandbox.' : '') + 'glympse.com/v2/'));
 
 		// Sync up viewer settings
 		cfgViewer.apiKey = apiKey;

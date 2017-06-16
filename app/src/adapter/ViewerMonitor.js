@@ -73,6 +73,8 @@ define(function(require, exports, module)
 			viewerElement.addEventListener(glyEvents.INVITE_ADDED, viewerInviteAdded, false);
 			viewerElement.addEventListener(glyEvents.INVITE_REMOVED, viewerInviteRemoved, false);
 			viewerElement.addEventListener(glyEvents.INVITE_CLICKED, viewerInviteClicked, false);
+			viewerElement.addEventListener(glyEvents.INVITE_ERROR, viewerInviteError, false);
+			viewerElement.addEventListener(glyEvents.OAUTH_TOKEN_ERROR, viewerOauthTokenError, false);
 		};
 
 		this.shutdown = function()
@@ -332,6 +334,16 @@ define(function(require, exports, module)
 			//dbg('InviteClicked', e.detail);
 			e.detail.data = undefined;
 			controller.notify(m.InviteClicked, e.detail);
+		}
+
+		function viewerInviteError(e)
+		{
+			controller.notify(m.InviteError, e.detail);
+		}
+
+		function viewerOauthTokenError(e)
+		{
+			controller.notify(m.OauthError, e.detail);
 		}
 
 

@@ -150,6 +150,7 @@ define(function(require, exports, module)
 			, InviteInit: 'InviteInit'
 			, InviteReady: 'InviteReady'
 			, InviteRemoved: 'InviteRemoved'
+			, OauthError: 'OauthError'
 			, Progress: 'Progress'
 			, StateUpdate: 'StateUpdate'
 			, ViewerInit: 'ViewerInit'

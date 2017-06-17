@@ -6,6 +6,7 @@ define(function(require, exports, module)
 	var ajax = require('glympse-adapter/lib/ajax');
 	var Defines = require('glympse-adapter/GlympseAdapterDefines');
 	var imageProcessing = require('glympse-adapter/lib/image');
+	var md5 = require('glympse-adapter/lib/md5');
 
 	var m = Defines.MSG;
 	var REQUEST_TYPES = Defines.CARDS.REQUEST_TYPES;
@@ -36,6 +37,7 @@ define(function(require, exports, module)
 		var account = {};
 
 		var apiKey = cfg.apiKey;
+		var hashApiKey = md5(apiKey);
 
 		var urlCreate = (svr + 'account/create');
 		var urlLogin = (svr + 'account/login');
@@ -272,7 +274,7 @@ define(function(require, exports, module)
 
 		function saveSettings()
 		{
-			currentEnvKeys[apiKey] = currentKeySettings;
+			currentEnvKeys[hashApiKey] = currentKeySettings;
 			settings[idEnvironment] = currentEnvKeys;
 			lib.setCfgVal(cAccountInfo, settings);
 		}
@@ -281,7 +283,22 @@ define(function(require, exports, module)
 		{
 			settings = lib.getCfgVal(cAccountInfo) || {};
 			currentEnvKeys = settings[idEnvironment] || {};
-			currentKeySettings = currentEnvKeys[apiKey] || {};
+
+			// check for settings under apiKey first to not break old accounts
+			currentKeySettings = currentEnvKeys[apiKey];
+
+			if (currentKeySettings)
+			{
+				dbg('.. migrating old settings ..');
+
+				// save in new format
+				delete currentEnvKeys[apiKey];
+				saveSettings();
+			}
+			else
+			{
+				currentKeySettings = currentEnvKeys[hashApiKey] || {};
+			}
 		}
 
 		function deleteSettings()

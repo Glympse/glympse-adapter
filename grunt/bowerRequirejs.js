@@ -1,6 +1,6 @@
 // Automagically wire-up installed Bower components into your RequireJS config
 module.exports = {
-  raget: {
+  target: {
     rjsConfig: '<%= config.app %>/src/requireConfig.js'
   },
   options: {

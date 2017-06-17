@@ -5,7 +5,8 @@ define(function(require, exports, module)
 
 	var Defines =
 	{
-		PORT: 'glympse'
+		  PORT: 'glympse'
+
 		, MAP: {
 
 			/////////////////////////////////////////
@@ -187,12 +188,14 @@ define(function(require, exports, module)
 	// Global namespace registration
 	(function(w) {
 		var g = w.glympse || {};
+		/* eslint-disable no-unused-expressions */
 		g.broadcastTypes || (g.broadcastTypes = {
 								DATA: 'DATA',
 								ETA: 'ETA',
 								INVITE_STATUS: 'INVITE_STATUS'
 							});
 		g.GlympseAdapterDefines || (g.GlympseAdapterDefines = Defines);
+		/* eslint-enable no-unused-expressions */
 
 		w.glympse = g;
 	})(window);

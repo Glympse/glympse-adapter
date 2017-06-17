@@ -29,7 +29,7 @@ define(function(require, exports, module)
 		// state
 		var that = this;
 		var cardsController;
-		var cfgMonitor = {dbg: cfgApp.dbg, viewer: elementViewer};
+		var cfgMonitor = { dbg: cfgApp.dbg, viewer: elementViewer };
 		var invitesCard;
 		var invitesGlympse;
 		var invitesReferences = {};
@@ -51,6 +51,7 @@ define(function(require, exports, module)
 
 		var port;
 		var cardsMode = cfgAdapter.cardsMode;
+		var publishedConfig = {};
 
 		var initialized = false;
 		var apiKey = cfgAdapter.apiKey || 'nXQ44D38OdVzEC34';	// sand/prod: application/79 --> prod org 20715 or 24778
@@ -58,7 +59,7 @@ define(function(require, exports, module)
 
 		cfgAdapter.apiKey = apiKey;
 		cfgAdapter.dbg = cfgApp.dbg || cfgAdapter.dbg;
-		cfgAdapter.svcGlympse = (cfgAdapter.svcGlympse || ('//api.' + ((cfgAdapter.sandbox) ? 'sandbox.' : '') + 'glympse.com/v2/'));
+		cfgAdapter.svcGlympse = (cfgAdapter.svcGlympse || ('https://api.' + ((cfgAdapter.sandbox) ? 'sandbox.' : '') + 'glympse.com/v2/'));
 
 		// Sync up viewer settings
 		cfgViewer.apiKey = apiKey;
@@ -90,18 +91,18 @@ define(function(require, exports, module)
 			var card = cfgAdapter.card;
 			var t = cfgAdapter.t;
 
-			var cfgClient = {consumers: {}};
+			var cfgClient = { consumers: {} };
 			var events = {};
 			var requests = {};
 
 			var cleanInvites = lib.cleanInvites;
 
-			invitesCard = (card) ? cleanInvites([card]) : [];
+			invitesCard = (card) ? cleanInvites([ card ]) : [];
 			invitesGlympse = cleanInvites(splitMulti(t));
 
 			events.setUserInfo = setUserInfo;	// Dummy/test
 
-			$.extend(settings, {invitesCard: invitesCard, invitesGlympse: invitesGlympse});
+			$.extend(settings, { invitesCard: invitesCard, invitesGlympse: invitesGlympse });
 
 
 			coreController = new CoreController(this, cfgAdapter);
@@ -110,14 +111,15 @@ define(function(require, exports, module)
 
 			// API namespaced endpoints
 			var svcs = [
-				{id: 'MAP', targ: viewerMonitor},
-				{id: 'CARDS', targ: cardsController},
-				{id: 'CORE', targ: coreController}
+				{ id: 'MAP', targ: viewerMonitor },
+				{ id: 'CARDS', targ: cardsController },
+				{ id: 'CORE', targ: coreController }
 			];
 
-			var intInterfaces = {map: {}, cards: {}, core: {}};
+			var intInterfaces = { map: {}, cards: {}, core: {}, app: {} };
 
-			// Local overrides
+			intInterfaces.app.getConfig = getConfig;
+
 			// FIXME: This shouldn't go here
 			intInterfaces.map[ViewerMonitor.GetInviteProperties] = getInviteProperties;
 			intInterfaces.map[ViewerMonitor.GetInviteProperty] = getInviteProperty;
@@ -179,7 +181,30 @@ define(function(require, exports, module)
 				settings.ext = extInterfaces;
 			}
 
-			connectQueue.push({id: 'Connected', val: settings});
+			// Add local app interfaces
+			var appMethods = {
+				getConfig: getConfig
+			};
+
+			requests.app = function(data)
+			{
+				return appMethods[data.id](data.args);
+			};
+
+			settings.app = [];
+			for (id in appMethods)
+			{
+				settings.app.push(id);
+				controller.app[id] = appMethods[id];
+			}
+
+			// Set up the publishable config
+			var extViewerCfg = lib.generateClone(cfgViewer);
+			delete extViewerCfg['apiKey'];	// Delete sensitive info
+			publishedConfig = { viewer: extViewerCfg, published: lib.generateClone(cfg.published) };
+
+			// On connect, advertise interfaces + publishable config settings
+			connectQueue.push({ id: 'Connected', val: $.extend({}, settings, { cfg: publishedConfig }) });
 
 			cfgClient.consumers[Defines.PORT] = Oasis.Consumer.extend(
 				{
@@ -670,6 +695,16 @@ define(function(require, exports, module)
 			{
 				connectQueue.push({id: id, val: val});
 			}
+		}
+
+
+		///////////////////////////////////////////////////////////////////////////////
+		// HOST REQUEST HANDLERS (APP)
+		///////////////////////////////////////////////////////////////////////////////
+
+		function getConfig()
+		{
+			return publishedConfig;
 		}
 
 

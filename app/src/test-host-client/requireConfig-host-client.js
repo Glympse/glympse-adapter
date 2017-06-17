@@ -12,8 +12,9 @@ require.config({
         oasis: '../common/oasis',
         rsvp: '../common/rsvp',
         'glympse-adapter': '../.',
-		'src-host': 'src/.'
-    },
+		'src-client': '../test-client/src/.',
+		'src-host': '../test-host/src/.'
+	},
     packages: [
 
     ]

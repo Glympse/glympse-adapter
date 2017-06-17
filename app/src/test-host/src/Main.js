@@ -9,8 +9,8 @@ define(function(require, exports, module)
 	var AdapterDefines = require('glympse-adapter/GlympseAdapterDefines');
 
 	// Test app-specific
-	var ViewManager = require('src/ViewManager');
-	var Defines = require('src/Defines');
+	var ViewManager = require('src-host/ViewManager');
+	var Defines = require('src-host/Defines');
 
 	var c = Defines.CMD;
 	var m = AdapterDefines.MSG;

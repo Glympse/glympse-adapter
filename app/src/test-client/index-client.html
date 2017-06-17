@@ -4,8 +4,8 @@
 	<head>
         <link rel="stylesheet" type="text/css" href="../../css/styles.css" />
 
-		<script type=text/javascript src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script type=text/javascript src="//viewer.content.glympse.com/components/glympse-viewer/dev/jquery.glympser.min.js"></script>
+		<script type=text/javascript src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script type=text/javascript src="https://viewer.content.glympse.com/components/glympse-viewer/dev/jquery.glympser.min.js"></script>
 
 		<!-- process:remove:dev -->
 		<script type="text/javascript" src="src/app.js"></script>
@@ -27,7 +27,7 @@
 				, viewer: {
 					  onlyCss: urlParams.onlyCss
 					, onlyCanvas: urlParams.onlyCanvas
-					//, basePath: '//dev.glympse.com/'
+					//, basePath: 'https://dev.glympse.com/'
 					, broadcast: [ b.DATA, /*b.ETA,*/ b.INVITE_STATUS ].join(',')
 					//, extCfg: "UvoM1hkDMkGonTTTxk4e6Q"
 					, disableSummary: true
@@ -44,8 +44,8 @@
 					, hideUpdates: false
 					, sandbox: false		// Account.js
 					, isAnon: true
-					//, svcGlympse: '//api.sandbox.glympse.com/v2/'
-					, svcGlympse: '//api.glympse.com/v2/'
+					//, svcGlympse: 'https://api.sandbox.glympse.com/v2/'
+					, svcGlympse: 'https://api.glympse.com/v2/'
 				}
 			};
 		</script>

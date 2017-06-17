@@ -289,7 +289,7 @@ define(function(require, exports, module)
 
 			if (currentKeySettings)
 			{
-				dbg('old-fashioned settings detected, will be migrated to the new format');
+				dbg('.. migrating old settings ..');
 
 				// save in new format
 				delete currentEnvKeys[apiKey];

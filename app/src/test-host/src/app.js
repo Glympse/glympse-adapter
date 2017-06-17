@@ -4,8 +4,8 @@ define(function(require, exports, module)
     'use strict';
 
     // import dependencies
-	var Main = require('src/Main');
-	var ViewManager = require('src/ViewManager');
+	var Main = require('src-host/Main');
+	var ViewManager = require('src-host/ViewManager');
 
 	var cfg;
 	var main;

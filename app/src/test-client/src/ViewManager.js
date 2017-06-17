@@ -7,7 +7,7 @@ define(function(require, exports, module)
 	var AdapterDefines = require('glympse-adapter/GlympseAdapterDefines');
 
 	// Test app-specific
-	var Defines = require('src/Defines');
+	var Defines = require('src-client/Defines');
 
 	var c = Defines.CMD;
 	var appMSG = AdapterDefines.MSG;
@@ -107,10 +107,15 @@ define(function(require, exports, module)
 
 		function doResize(forced)
 		{
+			if (cfg.noResize)
+			{
+				return;
+			}
+
 			//var w = $(window).width();
 			var h = $(window).height();// - $('#hdrApp').height();
 
-			divLoading.css({ height: $(window).height() + 0*1 });
+			divLoading.css({ height: $(window).height() });
 			glympser.css({ height: h });
 		}
 
@@ -124,8 +129,11 @@ define(function(require, exports, module)
 		// CTOR
 		///////////////////////////////////////////////////////////////////////////
 
-		doResize();
-		$(window).resize(doResize);
+		if (!cfg.noResize)
+		{
+			doResize();
+			$(window).resize(doResize);
+		}
 	}
 
 

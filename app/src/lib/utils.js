@@ -43,6 +43,60 @@ define(function(require, exports, module)
 			};
 		}
 
+		// Clone-ability status for a given value
+		/*, canBeCloned: function(val)
+		{
+			if(Object(val) !== val) // Primitive value
+			{
+				return true;
+			}
+
+			var canBeCloned = utils.canBeCloned;
+			switch({}.toString.call(val).slice(8,-1))
+			{ // Class
+				case 'Boolean':     case 'Number':      case 'String':      case 'Date':
+				case 'RegExp':      case 'Blob':        case 'FileList':
+				case 'ImageData':   case 'ImageBitmap': case 'ArrayBuffer':
+					return true;
+				case 'Array':       case 'Object':
+					return Object.keys(val).every(prop => canBeCloned(val[prop]));
+				case 'Map':
+					return [...val.keys()].every(canBeCloned) && [...val.values()].every(canBeCloned);
+				case 'Set':
+					return [...val.keys()].every(canBeCloned);
+				default:
+					console.log('val: ' + val);
+					console.log('bail: ' + {}.toString.call(val).slice(8,-1));
+					return false;
+			}
+		}*/
+
+		// Deep-copy an object, ensuring it is cloneable
+		, generateClone: function(o)
+		{
+			if (!(o instanceof Object))
+			{
+				return o;
+			}
+
+			var ctor = o.constructor;
+			if (ctor === Function)	// TODO: Catch other uncloneable object types
+			{
+				return null;
+			}
+
+			var clone = new ctor();
+			for (var prop in o)
+			{
+				if (o.hasOwnProperty(prop))
+				{
+					clone[prop] = utils.generateClone(o[prop]);
+				}
+			}
+
+			return clone;
+		}
+
 		, domain: window.location.hostname
 		, getCookie: function(id)
 		{

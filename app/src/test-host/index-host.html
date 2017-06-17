@@ -5,14 +5,14 @@
         <link rel="stylesheet" type="text/css" href="../../css/styles.css" />
 
 		<script type=text/javascript src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script type=text/javascript src="https://dev.glympse.com/js/loader/latest/jquery.glympser.min.js"></script>
+        <script type=text/javascript src="https://viewer.content.glympse.com/components/glympse-viewer/dev/jquery.glympser.min.js"></script>
 
 		<!-- process:remove:dev -->
 		<script type="text/javascript" src="src/app.js"></script>
 		<!-- /process -->
 
         <!-- process:remove:dist -->
-        <script type="text/javascript" src="../../lib/requirejs/require.js" data-main="requireConfig-host"></script>
+        <script type="text/javascript" src="../../../lib/requirejs/require.js" data-main="requireConfig-host"></script>
         <!-- /process -->
 
 		<script>
@@ -50,12 +50,13 @@
 			};
 		</script>
   </head>
-  <body>
-	  <div id="divSandbox" style="width:600px; height: 400px; margin-bottom: 10px; overflow: hidden;">
+  <body style="padding: 10px;">
+	  <div id="divSandbox" style="width:600px; height: 400px; margin-bottom: 10px;">
 	  </div>
 	  <div style='margin-bottom: 20px;'>
 		<input id='getArrived' value='Arrived?' type='button'/>
 		<input id='getAvatar' value='Avatar?' type='button'/>
+		<input id='getConfig' value='Config?' type='button'/>
 		<input id='getDestination' value='Destination?' type='button'/>
 		<input id='getEta' value='ETA?' type='button'/>
 		<input id='getExpired' value='Expired?' type='button'/>
@@ -78,12 +79,12 @@
 		<input id='setPadding' value='Padding' type='button'/>
 	  </div>
 	  <div id="output">
-		  <div style='border-bottom: 1px solid #cdcdcd; padding-bottom: 10px;'>
+		  <div style='padding-bottom: 10px;'>
 			  <div style="font-weight: bold; font-size: 16px; font-style: italic; float: left; line-height: 26px;">Output:</div>
 			  <div style="font-weight: bold; font-size: 16px; font-style: italic; float: right;"><input id="btnOutputClear" type="button" value="Clear"></div>
 			  <div style="text-align: center;">&nbsp;</div>
 		  </div>
-		  <div id="outputText" style="clear: both; max-height: 372px; padding-top: 10px; overflow-y: auto;"></div>
+		  <div id="outputText" style="clear: both; max-height: 372px; padding: 10px 5px; background: #f0f0f0; overflow-y: auto; border: 1px solid #cdcdcd;"></div>
 	  </div>
 	</body>
 </html>

@@ -5,6 +5,20 @@ html, body {
 	background: #fff;
 }
 
+iframe {
+  border: 1px solid #444444;
+}
+
+pre {
+  background: #f0f0f0;
+  color: #000000;
+  margin: auto;
+  font-size: 12px;
+  line-height: 14px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
 body {
 	border: 0;
 	font-family: sans-serif;

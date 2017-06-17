@@ -261,6 +261,15 @@ define(function(require, exports, module)
 						{
 							val.n = undefined;
 							prop[id] = val;
+
+							// Viewer sets non-cloneable lat/lng vals when using gmaps
+							// FIXME: Fixable in the viewer instead?
+							if (id === s.Destination)
+							{
+								v.lat = (typeof v.lat === 'function') ? v.lat() : v.lat;
+								v.lng = (typeof v.lng === 'function') ? v.lng() : v.lng;
+							}
+
 							//dbg('id=' + id + ', v', v);
 							controller.infoUpdate(id, idInvite, owner, t, v);
 							break;

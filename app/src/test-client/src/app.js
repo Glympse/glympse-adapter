@@ -4,8 +4,8 @@ define(function(require, exports, module)
     'use strict';
 
     // import dependencies
-	var Main = require('src/Main');
-	var ViewManager = require('src/ViewManager');
+	var Main = require('src-client/Main');
+	var ViewManager = require('src-client/ViewManager');
 
 	var cfg;
 	var main;
@@ -33,6 +33,13 @@ define(function(require, exports, module)
 		cfg.app = cfgApp;
 		cfg.viewer = cfgViewer;
 
+		// Add custom settings to advertise to connecting host
+		cfg.published = {
+			viewer: {
+				customSetting: 'visible_to_host',
+				hostCanSeeThis: true
+			}
+		};
 
 		vm = new ViewManager(cfgApp);
 		main = new Main(vm, cfg);

@@ -42,10 +42,11 @@ define(function(require, exports, module)
 		// API endpoint namespace (updated at runtime)
 		///////////////////////////////////////////////////////////////////////////////
 
-		this.map = {};
+		this.app = {};
 		this.cards = {};
-		this.ext = {};
 		this.core = {};
+		this.ext = {};
+		this.map = {};
 
 
 		///////////////////////////////////////////////////////////////////////////////
@@ -96,7 +97,6 @@ define(function(require, exports, module)
 			}
 
 			glympserLoader = loadGlympser();
-
 			glympserLoader.done(function()
 			{
 				client = new Client(that
@@ -107,7 +107,7 @@ define(function(require, exports, module)
 				);
 
 				client.init({
-					id: VersionInfo.id
+					  id: VersionInfo.id
 					, version: VersionInfo.version
 				});
 			});

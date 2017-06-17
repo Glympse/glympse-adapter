@@ -5,7 +5,8 @@ define(function(require, exports, module)
 
 	var Defines =
 	{
-		PORT: 'glympse'
+		  PORT: 'glympse'
+
 		, MAP: {
 
 			/////////////////////////////////////////
@@ -138,6 +139,7 @@ define(function(require, exports, module)
 			, CardsRequestStatus: 'CardsRequestStatus'
 			, CardsJoinRequestStatus: 'CardsJoinRequestStatus'
 			, CardsJoinRequestCancelStatus: 'CardsJoinRequestCancelStatus'
+			, CardActivityStatus: 'CardActivityStatus'
 			, CardsActiveJoinRequestsStatus: 'CardsActiveJoinRequestsStatus'
 			, CardRemoveMemberStatus: 'CardRemoveMemberStatus'
 			, CardsLocationRequestStatus: 'CardsLocationRequestStatus'

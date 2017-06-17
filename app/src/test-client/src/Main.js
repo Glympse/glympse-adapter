@@ -10,7 +10,7 @@ define(function(require, exports, module)
 	var lib = require('glympse-adapter/lib/utils');
 
 	// Test app-specific
-	var Defines = require('src/Defines');
+	var Defines = require('src-client/Defines');
 
 	var m = AdapterDefines.MSG;
 

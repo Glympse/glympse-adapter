@@ -1,0 +1,143 @@
+<!doctype html>
+
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="../../css/styles.css" />
+
+	<script type=text/javascript src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script type=text/javascript src="https://viewer.content.glympse.com/components/glympse-viewer/dev/jquery.glympser.min.js"></script>
+
+	<!-- process:remove:dev -->
+	<script type="text/javascript" src="src/app.js"></script>
+	<!-- /process -->
+
+	<!-- process:remove:dist -->
+	<script type="text/javascript" src="../../../lib/requirejs/require.js" data-main="requireConfig-host-client"></script>
+	<!-- /process -->
+
+	<script>
+		var urlParams = {};
+		(function(){var e,a=/\+/g,r=/([^&=]+)=?([^&]*)/g,d=function(s){return decodeURIComponent(s.replace(a,' '));},
+			q=window.location.search.substring(1);while((e=r.exec(q))) urlParams[d(e[1])]=d(e[2]);}
+		)();
+
+		function logMsg(param, val, sep)
+		{
+			console.log('%c%s%c%s%s', 'font-weight: bold', param, 'font-weight: normal', (sep || ' - '), val);
+		}
+
+		logMsg('[index-host.html]', 'Query string options:', ' ');
+		logMsg('t', 'Glympse invite code to load');
+		//logMsg('card', 'Card invite code to load');
+		logMsg('debug', 'Enable Host-mode debugging');
+		logMsg('debugClient', 'Enable Client-mode debugging');
+
+		var cfgHost =
+		{
+			dbg: (urlParams.debug != null) ? 0 : 1
+			, adapter:
+			{
+				  hideEvents: false
+				, hideUpdates: false
+			}
+			, app:
+			{
+				elementAdapter: 'divSandbox'
+				, urlClient: 'http://localhost:8000/src/test-client/index-client.html?'
+							+ 't=' + (urlParams.t || 'robt0001')
+							+ ((urlParams.debugClient != null) ? ('&debug=' + urlParams.clientDebug)
+															   : '')
+			}
+			, viewer:
+			{
+			}
+		};
+
+		/**
+		 * Client setup
+		 */
+		var b = glympse.broadcastTypes;
+		window.cfgClient =
+		{
+			dbg: (urlParams.debug != null) ? 0 : 1
+			, app: {
+				elementViewer: '#glympser'
+				, noResize: true
+			}
+			, viewer: {
+				onlyCss: urlParams.onlyCss
+				, onlyCanvas: urlParams.onlyCanvas
+				, broadcast: [ b.DATA, /*b.ETA,*/ b.INVITE_STATUS ].join(',')
+				//, extCfg: "UvoM1hkDMkGonTTTxk4e6Q"
+				, disableSummary: true
+				, hideDialog: 255
+				, baseControl: 'gmaps'
+			}
+			, adapter: {
+				  card: urlParams.card
+				, t: urlParams.t || 'demobot0'
+				, pg: urlParams.pg
+				, g: urlParams.g
+				, twt: urlParams.twt
+				, hideEvents: false
+				, hideUpdates: false
+				, sandbox: false		// Account.js
+				, isAnon: true
+				, svcGlympse: 'https://api.glympse.com/v2/'
+			}
+		};
+	</script>
+</head>
+<body style="padding: 10px;">
+	<!-- "host" Layout -->
+	<h1>"Host" viewer</h1>
+	<div id="divSandbox" style="width:600px; height: 400px; margin-bottom: 10px;">
+	</div>
+	<div style='margin-bottom: 20px;'>
+		<input id='getArrived' value='Arrived?' type='button'/>
+		<input id='getAvatar' value='Avatar?' type='button'/>
+		<input id='getConfig' value='Config?' type='button'/>
+		<input id='getDestination' value='Destination?' type='button'/>
+		<input id='getEta' value='ETA?' type='button'/>
+		<input id='getExpired' value='Expired?' type='button'/>
+		<input id='getMessage' value='Message?' type='button'/>
+		<input id='getName' value='Name?' type='button'/>
+		<input id='getOwner' value='Owner?' type='button'/>
+		<input id='getPhase' value='Phase?' type='button'/>
+		<input id='getStartTime' value='Start Time?' type='button'/>
+		<input id='getEndTime' value='EndTime?' type='button'/>
+		<input id='sendRefresh' value='Refresh?' type='button'/>
+	</div>
+	<div style='margin-bottom: 20px;'>
+	  <input id='txtInput' placeholder="Enter info" type="text" />
+	  <input id='addInvite' value='+Invite' type='button'/>
+	  <input id='addGroup' value='+Group' type='button'/>
+	  <input id='addTopic' value='+Topic' type='button'/>
+	  <input id='addUser' value='+User' type='button'/>
+	  <input id='removeInvite' value='-Invite' type='button'/>
+	  <input id='setApiUrl' value='API URL' type='button'/>
+	  <input id='setPadding' value='Padding' type='button'/>
+	</div>
+	<div id="output">
+		<div style='padding-bottom: 10px;'>
+			<div style="font-weight: bold; font-size: 16px; font-style: italic; float: left; line-height: 26px;">Output:</div>
+			<div style="font-weight: bold; font-size: 16px; font-style: italic; float: right;"><input id="btnOutputClear" type="button" value="Clear"></div>
+			<div style="text-align: center;">&nbsp;</div>
+		</div>
+		<div id="outputText" style="clear: both; max-height: 372px; padding: 10px 5px; background: #f0f0f0; overflow-y: auto; border: 1px solid #cdcdcd;"></div>
+	</div>
+
+	<!-- "client" Layout -->
+	<div style="margin: 30px 0 10px 0;position:relative;height:530px;">
+		<h1>"Client" viewer</h1>
+		<div id="divLoading" class="defText">
+			<div id="divStatusInfo" class="defText">
+			[ Loading ]
+			</div>
+		</div>
+		<div>
+			<div id="glympser" style="height:500px;"></div>
+		</div>
+	</div>
+</body>
+</html>

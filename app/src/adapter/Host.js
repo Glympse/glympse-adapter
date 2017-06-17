@@ -81,7 +81,7 @@ define(function(require, exports, module)
 			//port = sandbox.capabilities[Defines.PORT];
 
 			dbg('clientConnected: "' + data.id + '" v(' + data.version + ')');
-			var interfaceTypes = [ 'map', 'card', 'ext' ];
+			var interfaceTypes = [ 'map', 'card', 'ext', 'app' ];
 
 			// Generate API endpoints on main GA instance based on
 			// the advertised interfaces from the client

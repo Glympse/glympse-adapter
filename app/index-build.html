@@ -6,8 +6,8 @@
 			body { font-family: sans-serif; font-size: 14px; line-height: 20px; margin: 0; padding: 0; border: 0; overflow:hidden; }
 		</style>
 
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script type=text/javascript src="//dev.glympse.com/js/loader/latest/jquery.glympser.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script type=text/javascript src="https://viewer.content.glympse.com/components/glympse-viewer/dev/jquery.glympser.min.js"></script>
 		<script type="text/javascript" src="../dist/GlympseAdapter-1.0.1.min.js"></script>
 
 		<script type="text/javascript">
@@ -22,7 +22,7 @@
 				, viewer: {
 					  onlyCss: urlParams.onlyCss
 					, onlyCanvas: urlParams.onlyCanvas
-					, basePath: '//dev.glympse.com/'
+					//, basePath: 'https://dev.glympse.com/'
 					, broadcast: [ b.DATA, b.ETA, b.INVITE_STATUS ].join(',')
 					//, extCfg: "UvoM1hkDMkGonTTTxk4e6Q"
 				}
@@ -37,8 +37,8 @@
 					, viewerPollInterval: 5000
 					, anon: false		// Account.js
 					, sandbox: true		// Account.js
-					, svcGlympse: '//api.sandbox.glympse.com/v2/'
-					//, svcGlympse: '//api.glympse.com/v2/'
+					, svcGlympse: 'https://api.sandbox.glympse.com/v2/'
+					//, svcGlympse: 'https://api.glympse.com/v2/'
 				}
 			};
 

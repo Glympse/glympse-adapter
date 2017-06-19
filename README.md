@@ -543,6 +543,8 @@ using GA in host-mode) that are sent by the adapter (defined in the
 - `InviteRemoved` / `{ id: glympse_invite_code, owner: glympse_user_account_id, card: card_id }`:
   Sent from the Glympse viewer whenever a Glympse invite has been removed from the map.
   No further updates will be seen from the Glympse invite via the adapter.
+- `OauthError` / `gly_oauth_error`: An error occurred when using a configuration based
+  authToken. No further attempts for the request will be made.
 - `Progress` / `{ curr: int, total: int }`: Seen during the initial loading phases of
   the adapter, and stops once the final `ViewerReady` message is generated.
 - `StateUpdate` / `{ id: property_id, invite: glympse_invite_id, owner: glympse_account_id, card: card_id, t: timestamp, val: property_value }`:

@@ -122,6 +122,9 @@ define(function(require, exports, module)
 	}
 
 	var api = {
+		appName: '',
+		version: '',
+
 		/**
 		 * @function ajax.makeRequest
 		 *
@@ -165,6 +168,10 @@ define(function(require, exports, module)
 					options.url += ((options.url.indexOf('?') < 0) ? '?' : '&') + 'oauth_token=' + account.getToken();
 				}
 			}
+
+			options.headers = $.extend({}, options.headers, {
+				'X-GlympseAgent': 'app=' + api.appName + '&ver=' + api.version
+			});
 
 			var context = {
 				request: $.Deferred(),

@@ -14,6 +14,7 @@ define(function(require, exports, module)
 	var VersionInfo = require('glympse-adapter/VersionInfo');
 	var Client = require('glympse-adapter/adapter/Client');
 	var Host = require('glympse-adapter/adapter/Host');
+	var ajax = require('glympse-adapter/lib/ajax');
 
 
 	// Faked AMD module setup -- necessary??
@@ -36,6 +37,9 @@ define(function(require, exports, module)
 		var that = this;
 
 		var glympserLoader = null;
+
+		ajax.appName = cfg.app.id;
+		ajax.version = cfg.app.version;
 
 
 		///////////////////////////////////////////////////////////////////////////////

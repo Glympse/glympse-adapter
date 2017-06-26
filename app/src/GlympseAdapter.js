@@ -26,9 +26,11 @@ define(function(require, exports, module)
 
 	function GlympseAdapter(controller, cfg)
 	{
+		var glympseAdapter = 'GlympseAdapter';
+
 		var cfgApp = (cfg && cfg.app) || {};
 		var cfgAdapter = (cfg && cfg.adapter) || {};
-		var dbg = lib.dbg('GlympseAdapter', cfgApp.dbg);
+		var dbg = lib.dbg(glympseAdapter, cfgApp.dbg);
 
 		var client;			// client mode
 		var host;			// host mode
@@ -37,9 +39,22 @@ define(function(require, exports, module)
 		var that = this;
 
 		var glympserLoader = null;
+		var version = VersionInfo.version;
 
-		ajax.appName = cfg.app.id;
-		ajax.version = cfg.app.version;
+		var localDefaults = {
+			appName: glympseAdapter,
+			appVersion: version
+		};
+
+		cfgAdapter.appName = cfgAdapter.appName || localDefaults.appName;
+		cfgAdapter.appVersion = cfgAdapter.appVersion || localDefaults.appVersion;
+
+		ajax.requestHeaders = {
+			'X-GlympseAgent': ('app=' + cfgAdapter.appName
+								+ '&ver=' + cfgAdapter.appVersion
+								+ '&comp=' + glympseAdapter
+								+ '&comp_ver=' + version)
+		};
 
 
 		///////////////////////////////////////////////////////////////////////////////

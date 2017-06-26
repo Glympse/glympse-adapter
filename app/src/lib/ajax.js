@@ -122,8 +122,7 @@ define(function(require, exports, module)
 	}
 
 	var api = {
-		appName: '',
-		version: '',
+		requestHeaders: {},
 
 		/**
 		 * @function ajax.makeRequest
@@ -169,9 +168,7 @@ define(function(require, exports, module)
 				}
 			}
 
-			options.headers = $.extend({}, options.headers, {
-				'X-GlympseAgent': 'app=' + api.appName + '&ver=' + api.version
-			});
+			options.headers = $.extend({}, options.headers, this.requestHeaders);
 
 			var context = {
 				request: $.Deferred(),

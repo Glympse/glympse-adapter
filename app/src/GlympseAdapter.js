@@ -41,13 +41,8 @@ define(function(require, exports, module)
 		var glympserLoader = null;
 		var version = VersionInfo.version;
 
-		var localDefaults = {
-			appName: glympseAdapter,
-			appVersion: version
-		};
-
-		cfgAdapter.appName = cfgAdapter.appName || localDefaults.appName;
-		cfgAdapter.appVersion = cfgAdapter.appVersion || localDefaults.appVersion;
+		cfgAdapter.appName = cfgAdapter.appName || glympseAdapter;
+		cfgAdapter.appVersion = cfgAdapter.appVersion || version;
 
 		ajax.requestHeaders = {
 			'X-GlympseAgent': ('app=' + cfgAdapter.appName

@@ -9,6 +9,8 @@ define(function(require, exports, module)
 	var Defines = require('glympse-adapter/GlympseAdapterDefines');
 	var ViewerMonitor = require('glympse-adapter/adapter/ViewerMonitor');
 	var CardsController = require('glympse-adapter/adapter/CardsController');
+	var InviteLoader = require('glympse-adapter/adapter/models/InviteLoader');
+	var InviteList = require('glympse-adapter/adapter/models/InviteList');
 	var CoreController = require('glympse-adapter/adapter/CoreController');
 	var GlympseLoader = require('glympse-adapter/adapter/GlympseLoader');
 	var Account = require('glympse-adapter/adapter/models/Account');
@@ -16,7 +18,6 @@ define(function(require, exports, module)
 	var s = Defines.STATE;
 	var m = Defines.MSG;
 	var mStateUpdate = m.StateUpdate;	// Used alot
-
 
 	function Client(controller, oasisLocal, app, cfg, elementViewer)
 	{
@@ -29,9 +30,11 @@ define(function(require, exports, module)
 		// state
 		var that = this;
 		var cardsController;
+		var inviteLoader;
 		var cfgMonitor = { dbg: cfgApp.dbg, viewer: elementViewer };
 		var invitesCard;
 		var invitesGlympse;
+        var inviteList = new InviteList(this);
 		var invitesReferences = {};
 		var glympseLoader;
 		var mapCardTicketInvites = {};
@@ -107,6 +110,7 @@ define(function(require, exports, module)
 
 			coreController = new CoreController(this, cfgAdapter);
 			cardsController = new CardsController(this, cfgAdapter);
+			inviteLoader = new InviteLoader(this, [], cfgAdapter);
 			viewerMonitor = new ViewerMonitor(this, cfgMonitor);
 
 			// API namespaced endpoints

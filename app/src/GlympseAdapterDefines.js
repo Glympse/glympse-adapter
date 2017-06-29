@@ -84,6 +84,24 @@ define(function(require, exports, module)
 			}
 		}
 
+		, PUBLIC_GROUPS: {
+
+			/////////////////////////////////////////
+			// API Endpoints - host and client
+			/////////////////////////////////////////
+
+			REQUESTS: {
+			}
+
+
+			/////////////////////////////////////////
+			// API Endpoints: client-only
+			/////////////////////////////////////////
+
+			, REQUESTS_LOCAL: {
+			}
+		}
+
 		, CORE: {
 
 			/////////////////////////////////////////
@@ -143,6 +161,10 @@ define(function(require, exports, module)
 			, CardsActiveJoinRequestsStatus: 'CardsActiveJoinRequestsStatus'
 			, CardRemoveMemberStatus: 'CardRemoveMemberStatus'
 			, CardsLocationRequestStatus: 'CardsLocationRequestStatus'
+
+			//Public group events
+			, PG_Loaded: 'PG_Loaded'
+			, PG_RequestStatus: 'PG_RequestStatus'
 
 			, DataUpdate: 'DataUpdate'
 			, InviteAdded: 'InviteAdded'

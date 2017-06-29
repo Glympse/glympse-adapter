@@ -221,11 +221,12 @@ define(function(require, exports, module)
 
 			// Notify of invite loading status
 			var initSettings = {
-				isCard: (card != null || cardsMode)
+				isCard: (card !== null || cardsMode)
 				, t: invitesGlympse
 				, pg: splitMulti(cfgAdapter.pg)
 				, twt: splitMulti(cfgAdapter.twt)
 				, g: splitMulti(cfgAdapter.g)
+				, publicGroup: cfgAdapter.object && cfgAdapter.object.group
 			};
 
 			progressCurrent = 0;
@@ -566,6 +567,17 @@ define(function(require, exports, module)
 		//		glympseLoader.init(t);
 		//		return;
 		//	}
+
+			// During init, look for an object `object`, if it exists, and it has a member of "group",
+			// then use this as an initialization for a new Glympse public group to begin loading/parsing, bypassing the normal initial group load
+			var obj = cfgAdapter.object || {};
+			if (obj.group)
+			{
+				console.warn('>>> TODO: initial group header received, start processing...', obj);
+
+				//TODO: public groups should be handled here (not passed to the viewer)
+				pg = obj.group.name;
+			}
 
 			// Straight invite types to load
 			if (t || pg || g || twt)

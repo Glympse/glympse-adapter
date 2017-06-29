@@ -5,13 +5,13 @@ define(function(require, exports, module) {
     var g = glympse;
 
     var Account = require('glympse-adapter/adapter/models/Account');
-    var svr = cfg.services;
 
     // Exported class
     function PublicGroup(cfgInvite, cfg) {
         ///////////////////////////////////////////////////////////////////////////////
         // PROPERTIES
         ///////////////////////////////////////////////////////////////////////////////
+    	var svr = cfg.services;
         var idGroup = cfgInvite.id;
         var initialRequest = true;
         var retryAttempts = 0;

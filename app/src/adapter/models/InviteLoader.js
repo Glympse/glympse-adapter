@@ -1,7 +1,7 @@
 define(function(require, exports, module) {
     'use strict';
 
-    require('glympse-adapter/lib/RequestTimeout');
+	var raf = require('glympse-adapter/lib/rafUtils');
     var PublicGroup = require('glympse-adapter/adapter/models/PublicGroup');
     var g = glympse;
     var glib = g.lib;
@@ -183,10 +183,10 @@ define(function(require, exports, module) {
 
             if (timerPublicGroup)
             {
-                clearRafTimeout(timerPublicGroup);
+                raf.clearTimeout(timerPublicGroup);
             }
 
-            timerPublicGroup = rafTimeout(loadNextPublicGroup, groupPoll);
+            timerPublicGroup = raf.setTimeout(loadNextPublicGroup, groupPoll);
         }
 
         ///////////////////////////////////////////////////////////////////////////////////
@@ -215,7 +215,7 @@ define(function(require, exports, module) {
 
                 if (retryAttempts < 10)
                 {
-                    rafTimeout(function()
+                    raf.setTimeout(function()
                     {
                         // FIXME: Sometimes request is "window" and will throw. Repro:
                         // - Start watching empty group

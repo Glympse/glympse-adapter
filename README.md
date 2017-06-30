@@ -116,13 +116,15 @@ var cfg =
 		, sandbox: *bool*
 		, svcGlympse: *string*
 		, dbg: *bool*
+		, appName: *string*
+		, appVersion: *string*
 		, loaderEnvironment: *string*
-        , loaderPath: *string*
-        , loaderVersion: *string*
-        , avatar: {
-              minSize: *number* //in pixels
-            , maxSize: *number* //in pixels
-        }
+		, loaderPath: *string*
+		, loaderVersion: *string*
+		, avatar: {
+			minSize: *number* //in pixels
+			, maxSize: *number* //in pixels
+		}
 	}
 };
 ```
@@ -160,7 +162,8 @@ var cfg =
   - `avatar` - configuration for Image processing for `core.setUserAvatar` API endpoint
     - `minSize`: Min size for avatar image scaling
     - `maxSize`: Max size for avatar image scaling
-
+  - `appName` - Name of the hosting application
+  - `appVersion` - Version of the hosting application
 
 ### Custom Marker Configuration
 For the `addMarkers(cfgMarkers)` API, the `cfgMarkers` object is of the following

@@ -2,6 +2,7 @@
 
 version |date        |notes
 :-------|:-----------|:------
+2.5.0   | 2017/06/30 | Update all api calls to send adapter/hosting app name and version
 2.4.0   | 2017/06/17 | New events, better token caching, https consistency, updated examples, new app interface
 2.3.2   | 2017/04/27 | Fix for removing first ticket invite from card
 2.3.1   | 2017/04/06 | Additional handling for expired/invalided auth tokens

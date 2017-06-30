@@ -94,14 +94,8 @@ define(function(require, exports, module)
 						}, PG_POLL_INTERVAL);
 					}
 
-					//TODO: add/remove invites to/from the viewer
-					var toAdd = publicGroup.getTicketGroup();
-					var toRemove = publicGroup.getInviteRemove();
-
-					if (toAdd.length || toRemove.length)
-					{
-						console.warn('>>> added/removed', toAdd, toRemove);
-					}
+					args.addedInvites = publicGroup.getTicketGroup();
+					args.removedInvites = publicGroup.getInviteRemove();
 
 					// notify parent ctrl
 					controller.notify(msg, args);

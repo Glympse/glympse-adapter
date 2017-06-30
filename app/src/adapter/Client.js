@@ -534,15 +534,9 @@ define(function(require, exports, module)
 					break;
 				}
 
+				case m.PG_Loaded:
                 case m.PG_RequestStatus:
                 {
-					sendEvent(msg, args);
-                    break;
-                }
-
-				case m.PG_Loaded:
-				{
-					loadMap(cfgViewer);
 					sendEvent(msg, args);
 					break;
 				}
@@ -591,15 +585,12 @@ define(function(require, exports, module)
 			// During init, look for an object `object`, if it exists, and it has a member of "group",
 			// then use this as an initialization for a new Glympse public group to begin loading/parsing, bypassing the normal initial group load
 			var obj = cfgAdapter.object || {};
-			if (obj.group)
+			if (obj.group || pg)
 			{
 				//dbg('Initial group header received, start processing...', obj);
 
-				publicGroupController.init(obj.group);
+				publicGroupController.init(obj.group || pg);
 				return;
-
-				//TODO: all public groups should be handled here (not passed to the viewer)
-				// pg = obj.group.name;
 			}
 
 			// Straight invite types to load

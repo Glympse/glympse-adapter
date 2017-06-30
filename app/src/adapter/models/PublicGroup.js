@@ -72,58 +72,20 @@ define(function(require, exports, module)
 		{
 			var noPolling = false;
 
+			var demoGroup = PublicGroup._DemoGroups[groupName.toString().toLowerCase()];
+
 			if (!loaded)
 			{
 				//console.log('::: :: INITIAL REQUEST :: ::: -- ' + idGroup);
 
-				var sub = idGroup.toString().toLowerCase();
-				if (sub === 'bryanaroundseattle')
+				if (demoGroup)
 				{
+					// do not poll demo groups
 					noPolling = true;
 
 					raf.setTimeout(function()
 					{
-						processGroupInitial({
-							result: 'ok',
-							response: {
-								type: 'group',
-								id: 119,
-								events: 1,
-								members: [{ id: 'DNA7-4HDZ-03WHE', invite: 'demobot0' }],
-								public: true,
-								name: '!BryanTheRussel'
-							},
-							meta: { code: 200, time: new Date().getTime() }
-						});
-					}, 200);
-				}
-				else if (sub === 'seattleteam')
-				{
-					noPolling = true;
-
-					raf.setTimeout(function()
-					{
-						processGroupInitial({
-							result: 'ok',
-							response: {
-								type: 'group',
-								id: 119,
-								events: 1,
-								members: [
-									{ id: 'DNA7-4HDZ-03WH0', invite: 'demobot0' },
-									{ id: 'DNA7-4HDZ-03WH1', invite: 'demobot1' },
-									{ id: 'DNA7-4HDZ-03WH2', invite: 'demobot2' },
-									{ id: 'DNA7-4HDZ-03WH3', invite: 'demobot3' },
-									{ id: 'DNA7-4HDZ-03WH4', invite: 'demobot4' },
-									{ id: 'DNA7-4HDZ-03WH5', invite: 'demobot5' },
-									{ id: 'DNA7-4HDZ-03WH6', invite: 'demobot6' },
-									{ id: 'DNA7-4HDZ-03WH7', invite: 'demobot7' }
-								],
-								public: true,
-								name: '!SeattleTeam'
-							},
-							meta: { code: 200, time: new Date().getTime() }
-						}, true);
+						processGroupInitial(demoGroup);
 					}, 200);
 				}
 				else
@@ -132,12 +94,21 @@ define(function(require, exports, module)
 						.then(processGroupInitial);
 				}
 			}
+			// do not poll demo groups
 			else
 			{
-				//console.log('::: :: EVENTS REQUEST :: :::');
+				if (demoGroup)
+				{
+					// do not poll demo groups
+					noPolling = true;
+				}
+				else
+				{
+					//console.log('::: :: EVENTS REQUEST :: :::');
 
-				ajax.get(svr + urlEvents, { next: next }, account)
-					.then(processGroupUpdate);
+					ajax.get(svr + urlEvents, { next: next }, account)
+						.then(processGroupUpdate);
+				}
 			}
 
 			return noPolling;
@@ -331,6 +302,55 @@ define(function(require, exports, module)
 		}
 	}
 
+	PublicGroup._DemoGroups = {
+		bryanaroundseattle: {
+			status: true,
+			response: {
+				type: 'group',
+				id: 119,
+				events: 1,
+				members: [{ id: 'DNA7-4HDZ-03WHE', invite: 'demobot0' }],
+				public: true,
+				name: 'BryanTheRussel'
+			},
+			time: Date.now()
+		},
+		seattleteam: {
+			status: true,
+			response: {
+				type: 'group',
+				id: 119,
+				events: 1,
+				members: [
+					{ id: 'DNA7-4HDZ-03WH0', invite: 'demobot0' },
+					{ id: 'DNA7-4HDZ-03WH1', invite: 'demobot1' },
+					{ id: 'DNA7-4HDZ-03WH2', invite: 'demobot2' },
+					{ id: 'DNA7-4HDZ-03WH3', invite: 'demobot3' },
+					{ id: 'DNA7-4HDZ-03WH4', invite: 'demobot4' },
+					{ id: 'DNA7-4HDZ-03WH5', invite: 'demobot5' },
+					{ id: 'DNA7-4HDZ-03WH6', invite: 'demobot6' },
+					{ id: 'DNA7-4HDZ-03WH7', invite: 'demobot7' }
+				],
+				public: true,
+				name: 'SeattleTeam'
+			},
+			time: Date.now()
+		},
+		demoshuttle: {
+			status: true,
+			response: {
+				type: 'group',
+				id: 119,
+				events: 1,
+				members: [
+					{ id: 'DNA7-4HDZ-03WH0', invite: 'demobot0' }
+				],
+				public: true,
+				name: 'DemoShuttle'
+			},
+			time: Date.now()
+		}
+	};
 
 	module.exports = PublicGroup;
 });

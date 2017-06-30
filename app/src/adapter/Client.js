@@ -534,6 +534,12 @@ define(function(require, exports, module)
 					break;
 				}
 
+                case m.PG_RequestStatus:
+                {
+					sendEvent(msg, args);
+                    break;
+                }
+
 				case m.PG_Loaded:
 				{
 					loadMap(cfgViewer);
@@ -587,7 +593,7 @@ define(function(require, exports, module)
 			var obj = cfgAdapter.object || {};
 			if (obj.group)
 			{
-				dbg('Initial group header received, start processing...', obj);
+				//dbg('Initial group header received, start processing...', obj);
 
 				publicGroupController.init(obj.group);
 				return;

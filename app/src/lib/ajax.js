@@ -122,6 +122,8 @@ define(function(require, exports, module)
 	}
 
 	var api = {
+		requestHeaders: {},
+
 		/**
 		 * @function ajax.makeRequest
 		 *
@@ -165,6 +167,8 @@ define(function(require, exports, module)
 					options.url += ((options.url.indexOf('?') < 0) ? '?' : '&') + 'oauth_token=' + account.getToken();
 				}
 			}
+
+			options.headers = $.extend({}, options.headers, this.requestHeaders);
 
 			var context = {
 				request: $.Deferred(),

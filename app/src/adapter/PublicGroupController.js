@@ -9,6 +9,7 @@ define(function(require, exports, module)
 	var PublicGroup = require('glympse-adapter/adapter/models/PublicGroup');
 
 	var m = Defines.MSG;
+	var r = Defines.CORE.REQUESTS;
 	var rl = Defines.CORE.REQUESTS_LOCAL;
 
 	// Exported class
@@ -20,42 +21,19 @@ define(function(require, exports, module)
 		var PG_POLL_INTERVAL = 15000;
 
 		// state
-		var initialized = false;
 		var account = cfg.account;
-		var noPolling = false;
-		var pollingInterval;
+		var timerRequest;
 
-		var groupName;
-		var groupRaw;
-		var publicGroup;
+		var groups = {};
+		var groupsToLoad = [];
+		var pollGroups = [];
 
 		var that = this;
+
 
 		///////////////////////////////////////////////////////////////////////////////
 		// PUBLICS
 		///////////////////////////////////////////////////////////////////////////////
-
-		this.init = function(pg)
-		{
-			if (typeof pg === 'string')
-			{
-				// load from scratch
-				groupName = pg;
-			}
-			else
-			{
-				// given the initial group header
-				groupName = pg.name;
-				groupRaw = pg;
-			}
-
-			initialized = true;
-
-			if (account)
-			{
-				accountInitComplete();
-			}
-		};
 
 		this.notify = function(msg, args)
 		{
@@ -74,30 +52,9 @@ define(function(require, exports, module)
 					break;
 				}
 
-				case m.PG_Loaded:
+				case m.GroupLoaded:
+				case m.GroupStatus:
 				{
-					controller.notify(msg, args);
-					break;
-				}
-				case m.PG_RequestStatus:
-				{
-					// schedule next update
-					if (!noPolling)
-					{
-						if (pollingInterval)
-						{
-							raf.clearInterval(pollingInterval);
-						}
-						pollingInterval = raf.setTimeout(function()
-						{
-							publicGroup.request();
-						}, PG_POLL_INTERVAL);
-					}
-
-					args.addedInvites = publicGroup.getTicketGroup();
-					args.removedInvites = publicGroup.getInviteRemove();
-
-					// notify parent ctrl
 					controller.notify(msg, args);
 					break;
 				}
@@ -116,9 +73,25 @@ define(function(require, exports, module)
 		{
 			switch (cmd)
 			{
-				//TODO: get orgs cmd probably can be here (FE-852)
+				case r.addGroup:
+				{
+					console.log('addGroup: ', args);
+
+					if (account)
+					{
+						loadGroup(args);
+						break;
+					}
+
+					groupsToLoad.push(args);
+					break;
+				}
+
 				default:
+				{
 					dbg('method not found', cmd);
+					break;
+				}
 			}
 		};
 
@@ -127,15 +100,60 @@ define(function(require, exports, module)
 		// UTILITY
 		///////////////////////////////////////////////////////////////////////////////
 
-		function loadPublicGroup()
+		function loadGroup(groupInfo)
 		{
-			publicGroup = new PublicGroup(that, account, groupName, cfg);
-			if (groupRaw)
+			var name;
+			var header;
+
+			if (typeof groupInfo === 'string')
 			{
-				publicGroup.setData(groupRaw);
-				groupRaw = null;
+				// load from scratch
+				name = groupInfo;
 			}
-			noPolling = publicGroup.request();
+			else
+			{
+				// given the initial group header
+				name = groupInfo.name;
+				header = groupInfo;
+			}
+
+			if (groups[name])
+			{
+				console.log('[PGController]: ERROR group "' + name + '" already loaded');
+				return;
+			}
+
+			var group = new PublicGroup(that, account, name, cfg);
+
+			groups[name] = group;
+
+			// Initial group with a header = real group
+			if (header)
+			{
+				group.setData(header);
+			}
+			else
+			{
+				if (group.request())
+				{
+					return;
+				}
+			}
+
+			pollGroups.push(group);
+			if (pollGroups.length === 1)
+			{
+				timerRequest = raf.setInterval(makeGroupRequests, PG_POLL_INTERVAL);
+			}
+		}
+
+		function makeGroupRequests()
+		{
+			// FIXME: Make this a batch call instead
+			for (var i = 0, len = pollGroups.length; i < len; i++)
+			{
+				pollGroups[i].request();
+			}
 		}
 
 		function accountInitComplete(args)
@@ -148,14 +166,13 @@ define(function(require, exports, module)
 				return;
 			}
 
-			if (!initialized)
+			// Load any pending groups
+			for (var i = 0, len = groupsToLoad.length; i < len; i++)
 			{
-				dbg(sig + 'not initialized', args);
-				return;
+				loadGroup(groupsToLoad[i]);
 			}
 
-			// Now load the group
-			loadPublicGroup();
+			groupsToLoad = [];
 		}
 
 		function accountDeleteComplete()

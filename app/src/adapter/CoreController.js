@@ -7,9 +7,12 @@ define(function(require, exports, module)
 	var Defines = require('glympse-adapter/GlympseAdapterDefines');
 
 	var m = Defines.MSG;
+	var r = Defines.CORE.REQUESTS;
 	var rl = Defines.CORE.REQUESTS_LOCAL;
 
 	var Account = require('glympse-adapter/adapter/models/Account');
+	var GroupController = require('glympse-adapter/adapter/PublicGroupController');
+
 
 	// Exported class
 	function CoreController(controller, cfg)
@@ -19,6 +22,7 @@ define(function(require, exports, module)
 
 		// state
 		var account = new Account(this, cfg);
+		var groupController;
 
 
 		///////////////////////////////////////////////////////////////////////////////
@@ -35,12 +39,34 @@ define(function(require, exports, module)
 			switch (msg)
 			{
 				case m.AccountLoginStatus:
+				{
+					if (args.status && groupController)
+					{
+						groupController.notify(msg, args);
+					}
+
+					controller.notify(msg, args);
+					break;
+				}
+
 				case m.AccountDeleteStatus:
+				{
+					if (groupController)
+					{
+						groupController.notify(msg, args);
+					}
+
+					controller.notify(msg, args);
+					break;
+				}
+
 				case m.AccountCreateStatus:
 				case m.UserNameUpdateStatus:
 				case m.UserAvatarUpdateStatus:
 				case m.UserInfoStatus:
 				case m.CreateRequestStatus:
+				case m.GroupLoaded:
+				case m.GroupStatus:
 				{
 					controller.notify(msg, args);
 					break;
@@ -56,10 +82,38 @@ define(function(require, exports, module)
 			return null;
 		};
 
-		this.cmd = function(method, args)
+		this.cmd = function(cmd, args)
 		{
-			switch (method)
+			switch (cmd)
 			{
+				case rl.hasAccount:
+				{
+					return account.hasAccount();
+				}
+
+				case r.addGroup:
+				{
+					if (!groupController)
+					{
+						groupController = new GroupController(this, cfg);
+					}
+
+					groupController.cmd(cmd, args);
+					break;
+				}
+
+				case r.removeGroup:
+				{
+					console.log('ERROR: removeGroup() interface NOT_IMPL');
+					break;
+				}
+
+				case r.getGroup:
+				{
+					console.log('ERROR: getGroup() interface NOT_IMPL');
+					break;
+				}
+
 				case rl.accountCreate:
 				{
 					account.create();
@@ -88,11 +142,6 @@ define(function(require, exports, module)
 				{
 					account.getUserInfo(args);
 					break;
-				}
-
-				case rl.hasAccount:
-				{
-					return account.hasAccount();
 				}
 
 				case rl.createRequest:

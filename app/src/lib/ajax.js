@@ -59,7 +59,7 @@ define(function(require, exports, module)
 			if (result)
 			{
 				// in case of token error try to get new token & re-run action
-				if (result.error === 'oauth_token' || result.error === 'token_expired' || result.error === 'access_denied')
+				if (['oauth_token', 'token_expired', 'access_denied'].indexOf(result.error) !== -1)
 				{
 					if (account)
 					{
@@ -116,6 +116,7 @@ define(function(require, exports, module)
 			}
 
 			result.info = { status: 'max_attempts', lastResult: data };
+			result.error = 'Still failing after ' + MAX_ATTEMPTS + ' attempts';
 
 			that.request.resolve(result);
 		};
@@ -132,7 +133,8 @@ define(function(require, exports, module)
 		 * 									can be either auth object (documented below) or account instance
 		 *
 		 * @param {object} [auth.account] - account instance
-		 * @param {boolean} [auth.useBearer] - if should use bearer auth header instead of url param (default: true)
+		 * @param {boolean} [auth.useHeader] - if should add auth header instead of url param (default: true)
+		 * @param {boolean} [auth.useGlympseAuthHeader] - if should use "Glympse" auth header prefix instead of the default "Bearer" (default: false)
 		 * @param {boolean} [retryOnError] - if should re-try on temporary server errors (default: true)
 		 *
 		 * @returns {$.Deferred}
@@ -144,22 +146,30 @@ define(function(require, exports, module)
 
 			if (auth)
 			{
-				var useBearer = true;
+				var useHeader = true;
+				var authHeaderPrefix = 'Bearer ';
 				if (auth.account)
 				{
 					account = auth.account;
-					useBearer = (auth.useBearer !== false);
+					// TRUE if not exact FALSE is passed
+					useHeader = (auth.useHeader !== false);
+
+					// FALSE if not exact TRUE is passed
+					if (useHeader && (auth.useGlympseAuthHeader === true))
+					{
+						authHeaderPrefix = 'Glympse ';
+					}
 				}
 				else
 				{
 					account = auth;
 				}
 
-				if (useBearer)
+				if (useHeader)
 				{
 					options.beforeSend = function(request)
 					{
-						request.setRequestHeader('Authorization', 'Bearer ' + account.getToken());
+						request.setRequestHeader('Authorization', authHeaderPrefix + account.getToken());
 					};
 				}
 				else

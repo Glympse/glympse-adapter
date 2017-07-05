@@ -60,6 +60,7 @@ define(function(require, exports, module)
 		cfgAdapter.apiKey = apiKey;
 		cfgAdapter.dbg = cfgApp.dbg || cfgAdapter.dbg;
 		cfgAdapter.svcGlympse = (cfgAdapter.svcGlympse || ('https://api.' + ((cfgAdapter.sandbox) ? 'sandbox.' : '') + 'glympse.com/v2/'));
+		cfgAdapter.svcEnRoute = (cfgAdapter.svcEnRoute || ('https://' + ((cfgAdapter.sandbox) ? 's-' : '') + 'api.enterprise.glympse.com/api/v1/'));
 
 		// Sync up viewer settings
 		cfgViewer.apiKey = apiKey;
@@ -530,6 +531,7 @@ define(function(require, exports, module)
 
 				case m.GroupLoaded:
 				case m.GroupStatus:
+				case m.OrgObjects:
 				{
 					sendEvent(msg, args);
 					break;

@@ -5,6 +5,7 @@ define(function(require, exports, module)
 	// defines
 	var lib = require('glympse-adapter/lib/utils');
 	var raf = require('glympse-adapter/lib/rafUtils');
+	var ajax = require('glympse-adapter/lib/ajax');
 	var Defines = require('glympse-adapter/GlympseAdapterDefines');
 	var PublicGroup = require('glympse-adapter/adapter/models/PublicGroup');
 
@@ -17,6 +18,7 @@ define(function(require, exports, module)
 	{
 		// consts
 		var dbg = lib.dbg('PublicGroupController', cfg.dbg);
+		var svr = cfg.svcEnRoute;
 
 		var PG_POLL_INTERVAL = 15000;
 
@@ -87,6 +89,12 @@ define(function(require, exports, module)
 					break;
 				}
 
+				case r.getOrgObjects:
+				{
+					getOrgObjects(args);
+					break;
+				}
+
 				default:
 				{
 					dbg('Unknown cmd: "' + cmd + '" - ', args);
@@ -147,6 +155,43 @@ define(function(require, exports, module)
 			}
 		}
 
+		/**
+		 * Fetch org objects
+		 * @param {Object} reqParams
+		 * @param {number} reqParams.orgId
+		 * @param {string} [reqParams.objType]
+		 */
+		function getOrgObjects(reqParams)
+		{
+			if (!reqParams || !reqParams.orgId)
+			{
+				var error = '"orgId" request param must be specified!';
+
+				dbg(error, reqParams, 3);
+
+				controller.notify(m.OrgObjects, {
+					status: false,
+					error: error
+				});
+
+				return;
+			}
+
+			var url = svr + 'org/' + reqParams.orgId + '/objects';
+			var data;
+
+			if (reqParams.objType)
+			{
+				data = { type: encodeURIComponent(reqParams.objType) };
+			}
+
+			ajax.get(url, data, { account: account, useGlympseAuthHeader: true })
+				.then(function(result)
+				{
+					controller.notify(m.OrgObjects, result);
+				});
+		}
+
 		function makeGroupRequests()
 		{
 			// FIXME: Make this a batch call instead
@@ -176,10 +221,10 @@ define(function(require, exports, module)
 		function accountDeleteComplete()
 		{
 			account = null;
-			if (pollingInterval)
+			if (timerRequest)
 			{
-				raf.clearInterval(pollingInterval);
-				pollingInterval = null;
+				raf.clearInterval(timerRequest);
+				timerRequest = null;
 			}
 		}
 	}

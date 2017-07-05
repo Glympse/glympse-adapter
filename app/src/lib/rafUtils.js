@@ -1,6 +1,8 @@
 define(function(require, exports, module)
 {
 	var w = window;
+	var g = w.glympse;
+	var glib = (g && g.lib);
 	var initted = false;
 
 	var performance = w.performance;
@@ -18,7 +20,7 @@ define(function(require, exports, module)
 		if (!initted)
 		{
 			initted = true;
-			var syncRaf = (glympse && glympse.lib && glympse.lib.syncRAF);
+			var syncRaf = (glib && glib.syncRAF);	// FIXME: Should centralize syncRAF here as well?
 			if (syncRaf)
 			{
 				syncRaf();
@@ -85,7 +87,7 @@ define(function(require, exports, module)
 		if (!initted)
 		{
 			initted = true;
-			var syncRaf = (glympse && glympse.lib && glympse.lib.syncRAF);
+			var syncRaf = (glib && glib.syncRAF);
 			if (syncRaf)
 			{
 				syncRaf();

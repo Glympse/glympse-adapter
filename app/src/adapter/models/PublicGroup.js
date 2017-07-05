@@ -32,15 +32,31 @@ define(function(require, exports, module)
 		var loaded = false;
 		var next = 0;
 		var lastUpdate = 0;
-
-		var inviteGroup = [];
+		var demoGroup = PublicGroup._DemoGroups[groupName.toString().toLowerCase()];
 		var users = [];
-		var inviteRemove = [];
 
 		var that = this;
 
-		this.getTicketGroup = function () { return inviteGroup; };
-		this.getInviteRemove = function () { return inviteRemove; };
+
+		///////////////////////////////////////////////////////////////////////////////
+		// PROPERTIES
+		///////////////////////////////////////////////////////////////////////////////
+
+		this.getUsers = function()
+		{
+			return users;
+		};
+
+		this.getInvites = function()
+		{
+			for (var i = users.length - 1, invites = []; i >= 0; i--)
+			{
+				invites.push(users[i].invite);
+			}
+
+			return invites;
+		};
+
 
 		///////////////////////////////////////////////////////////////////////////////
 		// PUBLIC
@@ -53,100 +69,102 @@ define(function(require, exports, module)
 
 		this.setData = function(data)
 		{
-			if (!data)
+			if (data)
 			{
-				return;
+				return processGroupInitial({ status: true, response: data, time: Date.now() });
 			}
-			return processGroupInitial({
-				status: true,
-				response: data,
-				time: Date.now()
-			});
 		};
 
+
 		///////////////////////////////////////////////////////////////////////////////
-		// PRIVATE MEMBERS
+		// UTILITY
 		///////////////////////////////////////////////////////////////////////////////
 
 		function requestGroup()
 		{
-			var noPolling = false;
-
-			var demoGroup = PublicGroup._DemoGroups[groupName.toString().toLowerCase()];
-
 			if (!loaded)
 			{
 				//console.log('::: :: INITIAL REQUEST :: ::: -- ' + idGroup);
-
 				if (demoGroup)
 				{
-					// do not poll demo groups
-					noPolling = true;
-
 					raf.setTimeout(function()
 					{
 						processGroupInitial(demoGroup);
 					}, 200);
+
+					return true;	// do not poll demo groups
 				}
-				else
-				{
-					ajax.get(svr + urlInitial, urlInitialParams, account)
-						.then(processGroupInitial);
-				}
+
+				ajax.get(svr + urlInitial, urlInitialParams, account)
+					.then(processGroupInitial);
+
+				return false;
 			}
-			// do not poll demo groups
-			else
+
+			if (demoGroup)
 			{
-				if (demoGroup)
-				{
-					// do not poll demo groups
-					noPolling = true;
-				}
-				else
-				{
-					//console.log('::: :: EVENTS REQUEST :: :::');
-
-					ajax.get(svr + urlEvents, { next: next }, account)
-						.then(processGroupUpdate);
-				}
+				return true;	// do not poll demo groups
 			}
 
-			return noPolling;
+			//console.log('::: :: EVENTS REQUEST :: :::');
+			ajax.get(svr + urlEvents, { next: next }, account)
+				.then(processGroupUpdate);
+
+			return false;
+		}
+
+		function sendStatus(result, invitesAdded, invitesRemoved, invitesSwapped)
+		{
+			result.group = groupName;
+			
+			// Only send an update if some invite status is found
+			if (!(invitesAdded.length > 0 || invitesRemoved.length > 0 || invitesSwapped.length > 0))
+			{
+				return;
+			}
+
+			result.invitesAdded = invitesAdded;
+			result.invitesRemoved = invitesRemoved;
+			result.invitesSwapped = invitesSwapped;
+
+			controller.notify(m.GroupStatus, result);
 		}
 
 		// Parse returned initial Glympse Public Group results
 		function processGroupInitial(result)
 		{
-			inviteGroup = [];
-			loaded = true; // We're done, even if there is an error
+			loaded = true; // We're initialized, even if there is an error
+
+			var invitesAdded = [];
+			var invitesRemoved = [];
+			var invitesSwapped = [];
 
 			if (result.status)
 			{
-				parseGroupListResponse(result);
+				parseGroupListResponse(result, invitesAdded, invitesRemoved, invitesSwapped);
 			}
 
-			controller.notify(m.PG_RequestStatus, result);
-
-			//TODO: probably should sent it later, after all invites are ready
-			controller.notify(m.PG_Loaded, result);
+			sendStatus(result, invitesAdded, invitesRemoved, invitesSwapped);
+			controller.notify(m.GroupLoaded, result);
 		}
 
 		// Parse returned subsequent Glympse Public Group event results
 		function processGroupUpdate(result)
 		{
-			inviteGroup = [];
-			inviteRemove = [];
+			var invitesAdded = [];
+			var invitesRemoved = [];
+			var invitesSwapped = [];
+
 			loaded = true; // We're done, even if there is an error
 
 			//console.log('processGroupUpdate: got data: ' + data + ' -- ' + data.result);
 			if (result.status)
 			{
-
 				var o = result.response;
 
 				if (o.type === 'group')
 				{
-					parseGroupListResponse(result);
+					parseGroupListResponse(result, invitesAdded, invitesRemoved, invitesSwapped);
 				}
 				else //if (o.type === 'events')
 				{
@@ -166,28 +184,23 @@ define(function(require, exports, module)
 							{
 								var inv = item.invite;
 
-								if (item.type === 'swap')
-								{
-									console.log('GOT A SWAP -- member=' + item.member + ' -- invite=' + item.invite);
-								}
-
-								// Queue the new invite code for retrieval
-								dbg('ADD', inv);
-								inviteGroup.push(inv);
-
 								// See if we already have the user of the new 'invite'
 								user = findUser(item.member);
+
 								//console.log('[INVITE]member=' + item.member + '(found=' + (user != null) + ') oldInvite=' + (user && user.invite) + ', newInvite=' + inv);
 								if (user)
 								{
 									// If so, queue to remove the old invite and replace with the new one
-									dbg('REMOVE', user.invite);
-									inviteRemove.push(user.invite);
+									var swap = { user: u.id, invOld: user.invite, invNew: inv };
+									dbg('>> Invite swap: ', swap);
+									invitesSwapped.push(swap)
 									user.invite = inv;
 								}
 								else
 								{
 									// Otherwise, they are a new user to track
+									dbg('>> ADD: ', inv);
+									invitesAdded.push(inv);
 									users.push({ id: item.member, invite: inv });
 								}
 							}
@@ -198,8 +211,8 @@ define(function(require, exports, module)
 								user = findUser(item.member);
 								if (user)
 								{
-									dbg('REMOVE', user.invite);
-									inviteRemove.push(user.invite);
+									dbg('>> REMOVE: ', user.invite);
+									invitesRemoved.push(user.invite);
 									users.splice(users.indexOf(user), 1);
 								}
 							}
@@ -208,10 +221,10 @@ define(function(require, exports, module)
 				}
 			}
 
-			controller.notify(m.PG_RequestStatus, result);
+			sendStatus(result, invitesAdded, invitesRemoved, invitesSwapped);
 		}
 
-		function parseGroupListResponse(result)
+		function parseGroupListResponse(result, invitesAdded, invitesRemoved, invitesSwapped)
 		{
 			var i;
 			var o = result.response;
@@ -243,10 +256,10 @@ define(function(require, exports, module)
 							// Check if we have a new invite code for an existing user
 							if (u.invite !== m.invite)
 							{
-								dbg('ADD', m.invite);
-								inviteGroup.push(m.invite);
-								dbg('REMOVE', u.invite);
-								inviteRemove.push(u.invite);
+								var swap = { user: u.id, invOld: u.invite, invNew: m.invite };
+								dbg('** Invite swap: ', swap);
+								u.invite = m.invite;
+								invitesSwapped.push(swap)
 							}
 
 							// User still exists in the current list, so don't remove
@@ -258,8 +271,8 @@ define(function(require, exports, module)
 					// If not in the new list, remove the user
 					if (u)
 					{
-						dbg('REMOVE', u.invite);
-						inviteRemove.push(u.invite);
+						dbg('** REMOVE: ', u.invite);
+						invitesRemoved.push(u.invite);
 						users.splice(i, 1);
 					}
 				}
@@ -279,8 +292,8 @@ define(function(require, exports, module)
 					{
 						//console.log('id=' + cli.id + ', invite=' + cli.invite);
 						users.push(cli);
-						dbg('ADD', cli.invite);
-						inviteGroup.push(cli.invite);
+						dbg('** ADD: ', cli.invite);
+						invitesAdded.push(cli.invite);
 					}
 				}
 			}
@@ -288,17 +301,17 @@ define(function(require, exports, module)
 
 		function findUser(id)
 		{
-			for (var j = users.length - 1; j >= 0; j--)
+			for (var j = users.length - 1, userLocated = null; j >= 0; j--)
 			{
 				var user = users[j];
-
 				if (user.id === id)
 				{
-					return user;
+					userLocated = user;
+					break;
 				}
 			}
 
-			return null;
+			return userLocated;
 		}
 	}
 

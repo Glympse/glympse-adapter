@@ -90,6 +90,69 @@ define(function(require, exports, module)
 					break;
 				}
 
+				case appMSG.GroupLoaded:
+				{
+					dbg('[ GroupLoaded ]: ', args);
+					dbg('Group id: ' + args.group);
+
+					if (args.error)
+					{
+						dbg('Error - ' + args.error + ' -- ' + args.errorDetail);
+					}
+					else
+					{
+						dbg('Invites [ADD]: (' + args.invitesAdded.length + ') ' + args.invitesAdded);
+						dbg('Invites [DEL]: (' + args.invitesRemoved.length + ') ' + args.invitesRemoved);
+						dbg('Invites [SWP]: (' + args.invitesSwapped.length + ') ' + args.invitesSwapped);
+					}
+
+					break;
+				}
+
+				case appMSG.GroupStatus:
+				{
+					dbg('[ GroupStatus ]: ', args);
+					dbg('Group id: ' + args.group);
+
+					if (args.error)
+					{
+						dbg('Error - ' + args.error + ' -- ' + args.errorDetail);
+						break;
+					}
+
+					dbg('Invites [ADD]: (' + args.invitesAdded.length + ') ' + args.invitesAdded);
+					dbg('Invites [DEL]: (' + args.invitesRemoved.length + ') ' + args.invitesRemoved);
+					dbg('Invites [SWP]: (' + args.invitesSwapped.length + ') ' + args.invitesSwapped);
+
+					var map = cfg.adapter.map;
+					var dInvites = args.invitesRemoved;
+
+					if (dInvites.length > 0)
+					{
+						map.removeInvites(dInvites.join(';'));
+					}
+
+					dInvites = args.invitesAdded;
+					if (dInvites.length > 0)
+					{
+						map.addInvites(dInvites.join(';'));
+					}
+
+					dInvites = args.invitesSwapped;
+					if (dInvites.length > 0)
+					{
+						for (var i = dInvites.length - 1; i >= 0; i--)
+						{
+							// FIXME: Do the real swap in the viewer to maintain stuff like
+							// history trails across invite changes for a user
+							map.addInvites(dInvites[i].invNew);
+							map.removeInvites(dInvites[i].invOld);
+						}
+					}
+
+					break;
+				}
+
 				default:
 				{
 					dbg('cmd() - unknown cmd: "' + cmd + '"', args);

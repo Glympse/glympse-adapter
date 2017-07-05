@@ -2,6 +2,7 @@
 
 version |date        |notes
 :-------|:-----------|:------
+2.6.0   | 2017/07/05 | Add support for loading Glympse public groups directly in the adapter. Client must currently manage invites (i.e. manually add/remove them on the map -- see examples)
 2.5.0   | 2017/06/30 | Update all api calls to send adapter/hosting app name and version
 2.4.0   | 2017/06/17 | New events, better token caching, https consistency, updated examples, new app interface
 2.3.2   | 2017/04/27 | Fix for removing first ticket invite from card

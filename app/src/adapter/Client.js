@@ -352,7 +352,7 @@ define(function(require, exports, module)
 					{
 						args.data.invite = args.data.invite.toJSON();
 					}
-					
+
 					sendEvent(msg, args);
 					break;
 				}

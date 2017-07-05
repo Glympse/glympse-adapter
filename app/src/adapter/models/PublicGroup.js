@@ -116,7 +116,7 @@ define(function(require, exports, module)
 		function sendStatus(result, invitesAdded, invitesRemoved, invitesSwapped)
 		{
 			result.group = groupName;
-			
+
 			// Only send an update if some invite status is found
 			if (!(invitesAdded.length > 0 || invitesRemoved.length > 0 || invitesSwapped.length > 0))
 			{

@@ -142,6 +142,24 @@ define(function(require, exports, module)
 			}
 		}
 
+		function doInputCore(method, output)
+		{
+			var val = input.val();
+			if (val)
+			{
+				cfg.adapter.core[method](val).then(function(data)
+				{
+					logEvent('[' + output + '] val=' + val, data);
+				});
+
+				input.val('');
+			}
+			else
+			{
+				logEvent('[' + output + '] ERROR: Need input!');
+			}
+		}
+
 		function clearOutput()
 		{
 			outputText.empty();
@@ -198,6 +216,15 @@ define(function(require, exports, module)
 			};
 		}
 
+		function generateInputCore(targ, output)
+		{
+			return function()
+			{
+				doInputCore(targ, output);
+			};
+		}
+
+
 		///////////////////////////////////////////////////////////////////////////
 		// CALLBACKS
 		///////////////////////////////////////////////////////////////////////////
@@ -223,7 +250,7 @@ define(function(require, exports, module)
 
 		// Commands
 		$('#addInvite').click(generateInput('addInvites', 'AddInvites'));
-		$('#addGroup').click(generateInput('addGroups', 'AddGroups'));
+		$('#addGroup').click(generateInputCore('addGroup', 'addGroup'));
 		$('#addTopic').click(generateInput('addTwitterTopics', 'AddTwitterTopics'));
 		$('#addUser').click(generateInput('addTwitterUsers', 'AddTwitterUsers'));
 		$('#removeInvite').click(generateInput('removeInvites', 'RemoveInvites'));

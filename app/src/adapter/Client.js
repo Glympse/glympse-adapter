@@ -348,6 +348,11 @@ define(function(require, exports, module)
 				case m.InviteError:
 				{
 					//dbg('Invite loading error', args);
+					if (args.data.invite.toJSON)
+					{
+						args.data.invite = args.data.invite.toJSON();
+					}
+					
 					sendEvent(msg, args);
 					break;
 				}

@@ -75,7 +75,7 @@ define(function(require, exports, module)
 			{
 				case r.addGroup:
 				{
-					console.log('addGroup: ', args);
+					dbg('addGroup: ', args);
 
 					if (account)
 					{
@@ -89,7 +89,7 @@ define(function(require, exports, module)
 
 				default:
 				{
-					dbg('method not found', cmd);
+					dbg('Unknown cmd: "' + cmd + '" - ', args);
 					break;
 				}
 			}
@@ -119,7 +119,7 @@ define(function(require, exports, module)
 
 			if (groups[name])
 			{
-				console.log('[PGController]: ERROR group "' + name + '" already loaded');
+				dbg('[PGController]: ERROR group "' + name + '" already loaded');
 				return;
 			}
 

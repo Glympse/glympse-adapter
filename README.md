@@ -116,13 +116,15 @@ var cfg =
 		, sandbox: *bool*
 		, svcGlympse: *string*
 		, dbg: *bool*
+		, appName: *string*
+		, appVersion: *string*
 		, loaderEnvironment: *string*
-        , loaderPath: *string*
-        , loaderVersion: *string*
-        , avatar: {
-              minSize: *number* //in pixels
-            , maxSize: *number* //in pixels
-        }
+		, loaderPath: *string*
+		, loaderVersion: *string*
+		, avatar: {
+			minSize: *number* //in pixels
+			, maxSize: *number* //in pixels
+		}
 	}
 };
 ```
@@ -160,7 +162,8 @@ var cfg =
   - `avatar` - configuration for Image processing for `core.setUserAvatar` API endpoint
     - `minSize`: Min size for avatar image scaling
     - `maxSize`: Max size for avatar image scaling
-
+  - `appName` - Name of the hosting application
+  - `appVersion` - Version of the hosting application
 
 ### Custom Marker Configuration
 For the `addMarkers(cfgMarkers)` API, the `cfgMarkers` object is of the following
@@ -518,6 +521,39 @@ using GA in host-mode) that are sent by the adapter (defined in the
   - `n`: Property id
   - `v`: Property value (may be default type, or a custom Object with additional
   members)
+- `GroupLoaded`: Generated after an `addGroup` command is sent to the `core` endpoint, with information
+  about the just-loaded Glympse public group. For normal responses, the `args` payload will look something
+  like:
+  ```
+  {
+    "status": true,
+    "response": {
+      "type": "group",
+      "id": 119,
+      "events": 1,
+      "members": [
+        {
+          "id": "DNA7-4HDZ-03WH0",
+          "invite": "demobot0"
+        }
+      ],
+      "public": true,
+      "name": "DemoShuttle"
+    },
+    "time": 1499192505285,
+    "group": "demoshuttle",
+    "invitesAdded": [
+      "demobot0"
+    ],
+    "invitesRemoved": [],
+    "invitesSwapped": []
+  }
+  ```
+- `GroupResponse`: Seen periodically after a public group has been added to the adapter. This event
+  will contain updates to the group after initial load. Main usage will be in examining the contents
+  of the `invitesAdded`, `invitesRemoved`, and `invitesSwapped` arrays, which will be the updates since
+  initial load. Note that this event data will be identical to the initial `GroupLoaded` event for the
+  first `GroupResponse` event seen. See `GroupLoaded` for expected data format.
 - `InviteAdded` / `{ id: glympse_invite_code, owner: glympse_user_account_id, card: card_id }`:
   Sent from the Glympse viewer whenever a Glympse invite has been successfully
   loaded and added to the map.
@@ -701,6 +737,17 @@ client-mode. These are also specifed in `GlympseAdapterDefines.MAP.REQUESTS_LOCA
 - `ignoreDestinations(bool)`: Hides current invite destinations. Returns a list of all
   affected destination objects.
 
+
+### GlympseAdapter.core.* endpoints (host/client-mode):
+Below is a list of all of the exposed GA APIs with respect to the core Glympse API,
+and available to either host or client-based consumers. These endpoints are also
+specified in `GlympseAdapterDefines.CORE.REQUESTS`.
+
+- `addGroup(groupInfo: string|object)`: Creates a Glympse "public" group request for viewing.
+  `groupInfo` can specify the group id to load (if it is a string type), or the response of
+  an initial groups request (if it is an object type).
+- `getGroup(groupId: string)`: [NOT AVAILABLE]
+- `removeGroup(groupId: string)`: [NOT AVAILABLE]
 
 ### GlympseAdapter.core.* endpoints (client-mode-only):
 The following APIs are only available to consumers of the GA when running in

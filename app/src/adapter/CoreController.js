@@ -67,6 +67,7 @@ define(function(require, exports, module)
 				case m.CreateRequestStatus:
 				case m.GroupLoaded:
 				case m.GroupStatus:
+				case m.OrgObjects:
 				{
 					controller.notify(msg, args);
 					break;
@@ -111,6 +112,12 @@ define(function(require, exports, module)
 				case r.getGroup:
 				{
 					console.log('ERROR: getGroup() interface NOT_IMPL');
+					break;
+				}
+
+				case r.getOrgObjects:
+				{
+					groupController.cmd(cmd, args);
 					break;
 				}
 

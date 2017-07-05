@@ -94,6 +94,7 @@ define(function(require, exports, module)
 				addGroup: 'addGroup'
 				, getGroup: 'getGroup'
 				, removeGroup: 'removeGroup'
+				, getOrgObjects: 'getOrgObjects'
 			}
 
 
@@ -150,6 +151,7 @@ define(function(require, exports, module)
 			// Public group events
 			, GroupLoaded: 'GroupLoaded'
 			, GroupStatus: 'GroupStatus'
+			, OrgObjects: 'OrgObjects'
 
 			, DataUpdate: 'DataUpdate'
 			, InviteAdded: 'InviteAdded'

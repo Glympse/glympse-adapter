@@ -150,7 +150,9 @@ var cfg =
   anonymous mode, which will allow only for the viewing of Core API invites.
   - `sandbox`: Force usage of the sandbox environment for Cards/Glympses. Note that
   this setting, if set, will change some defaults of other params to fully align to
-  the sandbox environment: `loaderEnvironment` and `svcGlympse`
+  the sandbox environment: `loaderEnvironment`, `svcEnRoute` and `svcGlympse`
+  - `svcEnRoute`: Override the default Glympse EnRoute API environment. Default is
+    `//api.enterprice.glympse.com/api/v1/`, or `//s-api.enterprice.glympse.com/api/v1/`, if `sandbox` is set.
   - `svcGlympse`: Override the default Glympse API environment. Default is
   `//api.glympse.com/v2/`, or `//api.sandbox.glympse.com/v2/`, if `sandbox` is set.
   - `dbg`: Enable debugging state. Defaults to `false`.
@@ -549,11 +551,33 @@ using GA in host-mode) that are sent by the adapter (defined in the
     "invitesSwapped": []
   }
   ```
-- `GroupResponse`: Seen periodically after a public group has been added to the adapter. This event
+- `GroupStatus`: Seen periodically after a public group has been added to the adapter. This event
   will contain updates to the group after initial load. Main usage will be in examining the contents
   of the `invitesAdded`, `invitesRemoved`, and `invitesSwapped` arrays, which will be the updates since
   initial load. Note that this event data will be identical to the initial `GroupLoaded` event for the
   first `GroupResponse` event seen. See `GroupLoaded` for expected data format.
+- `OrgObjects`: Generated after an `getOrgObjects` command is sent to the `core` endpoint, with information
+  about the loaded org objects. For normal responses, the `args` payload will look something like:
+  ```
+  {
+    "status": true,
+    "response": [
+      {
+        "hierarchy": [],
+        "org_id": 603,
+        "last_modified_by": 83867,
+        "prop": true,
+        "last_modified": 1498545443327,
+        "created_time": 1498545401259,
+        "creator_agent_id": 83867,
+        "_id": 6,
+        "type": "route"
+      },
+      ...
+    ],
+    "time": 1499192505285
+  }
+  ```
 - `InviteAdded` / `{ id: glympse_invite_code, owner: glympse_user_account_id, card: card_id }`:
   Sent from the Glympse viewer whenever a Glympse invite has been successfully
   loaded and added to the map.
@@ -749,6 +773,10 @@ specified in `GlympseAdapterDefines.CORE.REQUESTS`.
   an initial groups request (if it is an object type).
 - `getGroup(groupId: string)`: [NOT AVAILABLE]
 - `removeGroup(groupId: string)`: [NOT AVAILABLE]
+- `getOrgObjects(params: Object)`: Requests a public group's objects (public groups can specify an associated org that can have an additional configuration in its objects).
+  Supported request params:
+  `orgId: number` id of the org to load objects for
+  `objType: string` optional type of objects to be loaded
 
 ### GlympseAdapter.core.* endpoints (client-mode-only):
 The following APIs are only available to consumers of the GA when running in

@@ -119,7 +119,7 @@ define(function(require, exports, module)
 
 			if (groups[name])
 			{
-				dbg('[PGController]: ERROR group "' + name + '" already loaded');
+				dbg('ERROR group "' + name + '" already loaded');
 				return;
 			}
 
@@ -158,11 +158,9 @@ define(function(require, exports, module)
 
 		function accountInitComplete(args)
 		{
-			var sig = '[PublicGroup#accountInitComplete] - ';
-
 			if (!account)
 			{
-				dbg(sig + 'authToken unavailable', args);
+				dbg('[accountInitComplete] - authToken unavailable', args);
 				return;
 			}
 

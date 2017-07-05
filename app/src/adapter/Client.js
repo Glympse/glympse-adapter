@@ -15,6 +15,7 @@ define(function(require, exports, module)
 
 	var s = Defines.STATE;
 	var m = Defines.MSG;
+	var coreReq = Defines.CORE.REQUESTS;
 	var mStateUpdate = m.StateUpdate;	// Used alot
 
 	function Client(controller, oasisLocal, app, cfg, elementViewer)
@@ -215,12 +216,11 @@ define(function(require, exports, module)
 			oasisLocal.connect(cfgClient);
 
 			// Notify of invite loading status
-			var pg = (cfgAdapter.pg || '');
 			var obj = (cfgAdapter.object || {});
 			var initSettings = {
 				isCard: (card !== null || cardsMode)
 				, t: invitesTicket
-				, pg: splitMulti(pg + ((obj.group) ? (((pg) ? ';' : '') + obj.group) : ''))
+				, pg: obj.group || splitMulti(cfgAdapter.pg)
 				, twt: splitMulti(cfgAdapter.twt)
 				, g: splitMulti(cfgAdapter.g)
 			};
@@ -573,7 +573,7 @@ define(function(require, exports, module)
 			if (obj.group || pg)
 			{
 				//dbg('Initial group header received, start processing...', obj);
-				coreController.cmd(Defines.CORE.REQUESTS.addGroup, obj.group || pg);
+				coreController.cmd(coreReq.addGroup, obj.group || pg);
 				return;
 			}
 

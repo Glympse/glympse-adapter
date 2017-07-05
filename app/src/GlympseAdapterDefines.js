@@ -91,6 +91,9 @@ define(function(require, exports, module)
 			/////////////////////////////////////////
 
 			REQUESTS: {
+				addGroup: 'addGroup'
+				, getGroup: 'getGroup'
+				, removeGroup: 'removeGroup'
 			}
 
 
@@ -143,6 +146,10 @@ define(function(require, exports, module)
 			, CardsActiveJoinRequestsStatus: 'CardsActiveJoinRequestsStatus'
 			, CardRemoveMemberStatus: 'CardRemoveMemberStatus'
 			, CardsLocationRequestStatus: 'CardsLocationRequestStatus'
+
+			// Public group events
+			, GroupLoaded: 'GroupLoaded'
+			, GroupStatus: 'GroupStatus'
 
 			, DataUpdate: 'DataUpdate'
 			, InviteAdded: 'InviteAdded'

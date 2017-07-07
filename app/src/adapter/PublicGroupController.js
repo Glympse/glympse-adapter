@@ -89,6 +89,23 @@ define(function(require, exports, module)
 					break;
 				}
 
+				case r.removeGroup:
+					if (!groups.hasOwnProperty(args)) {
+						return false;
+					}
+					return delete groups[args];
+
+                case r.getGroups:
+                    var arr = [];
+
+                    for (var key in groups) {
+                        if (groups.hasOwnProperty(key)) {
+                            arr.push(groups[key]);
+                        }
+                    }
+
+                    return arr;
+
 				case r.getOrgObjects:
 				{
 					getOrgObjects(args);

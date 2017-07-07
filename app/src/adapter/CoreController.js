@@ -103,10 +103,10 @@ define(function(require, exports, module)
 					break;
 				}
 
-				case r.removeGroup:
+                case r.removeGroup:
+                case r.getGroups:
 				{
-					console.log('ERROR: removeGroup() interface NOT_IMPL');
-					break;
+                    return groupController.cmd(cmd, args);
 				}
 
 				case r.getGroup:

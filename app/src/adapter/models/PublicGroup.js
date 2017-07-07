@@ -75,6 +75,10 @@ define(function(require, exports, module)
 			}
 		};
 
+		this.getName = function() {
+			return idGroup;
+		};
+
 
 		///////////////////////////////////////////////////////////////////////////////
 		// UTILITY

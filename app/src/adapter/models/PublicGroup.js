@@ -75,7 +75,8 @@ define(function(require, exports, module)
 			}
 		};
 
-		this.getName = function() {
+		this.getName = function()
+		{
 			return idGroup;
 		};
 

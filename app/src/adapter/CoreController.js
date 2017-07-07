@@ -103,10 +103,10 @@ define(function(require, exports, module)
 					break;
 				}
 
-                case r.removeGroup:
-                case r.getGroups:
+				case r.removeGroup:
+				case r.getGroups:
 				{
-                    return groupController.cmd(cmd, args);
+					return groupController.cmd(cmd, args);
 				}
 
 				case r.getGroup:

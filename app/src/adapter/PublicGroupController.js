@@ -90,16 +90,29 @@ define(function(require, exports, module)
 				}
 
 				case r.removeGroup:
-					if (!groups.hasOwnProperty(args)) {
+					if (!groups.hasOwnProperty(args))
+					{
 						return false;
 					}
+
+					for (var i = 0, len = pollGroups.length; i < len; i++)
+					{
+						if (pollGroups[i].getName() === args)
+						{
+							pollGroups.splice(i, 1);
+							break;
+						}
+					}
+
 					return delete groups[args];
 
                 case r.getGroups:
                     var arr = [];
 
-                    for (var key in groups) {
-                        if (groups.hasOwnProperty(key)) {
+                    for (var key in groups)
+                    {
+                        if (groups.hasOwnProperty(key))
+                        {
                             arr.push(groups[key]);
                         }
                     }

@@ -201,7 +201,7 @@ define(function(require, exports, module)
 
 			// Set up the publishable config
 			var extViewerCfg = lib.generateClone(cfgViewer);
-			delete extViewerCfg['apiKey'];	// Delete sensitive info
+			delete extViewerCfg.apiKey;	// Delete sensitive info
 			publishedConfig = { viewer: extViewerCfg, published: lib.generateClone(cfg.published) };
 
 			// On connect, advertise interfaces + publishable config settings

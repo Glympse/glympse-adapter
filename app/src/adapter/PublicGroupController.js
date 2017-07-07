@@ -104,6 +104,11 @@ define(function(require, exports, module)
 						}
 					}
 
+					controller.notify(m.GroupStatus, {
+						status: 'success',
+						invitesRemoved: groups[args].getInvites()
+					});
+
 					return delete groups[args];
 
                 case r.getGroups:

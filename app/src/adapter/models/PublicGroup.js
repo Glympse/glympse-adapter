@@ -11,6 +11,8 @@ define(function(require, exports, module)
 
 	var m = Defines.MSG;
 
+	var cDemoGroups;
+
 	// Exported class
 	function PublicGroup(controller, account, groupName, cfg)
 	{
@@ -32,7 +34,7 @@ define(function(require, exports, module)
 		var loaded = false;
 		var next = 0;
 		var lastUpdate = 0;
-		var demoGroup = PublicGroup._DemoGroups[groupName.toString().toLowerCase()];
+		var demoGroup = cDemoGroups[groupName.toString().toLowerCase()];
 		var users = [];
 
 		var that = this;
@@ -315,7 +317,7 @@ define(function(require, exports, module)
 		}
 	}
 
-	PublicGroup._DemoGroups = {
+	cDemoGroups = {
 		bryanaroundseattle: {
 			status: true,
 			response: {
@@ -359,7 +361,10 @@ define(function(require, exports, module)
 					{ id: 'DNA7-4HDZ-03WH0', invite: 'demobot0' }
 				],
 				public: true,
-				name: 'DemoShuttle'
+				name: 'DemoShuttle',
+				branding: {
+					org_id: -999
+				}
 			},
 			time: Date.now()
 		}

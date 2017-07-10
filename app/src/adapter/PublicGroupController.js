@@ -20,6 +20,8 @@ define(function(require, exports, module)
 		var dbg = lib.dbg('PublicGroupController', cfg.dbg);
 		var svr = cfg.svcEnRoute;
 
+		var cDemoOrgObjects = {};
+
 		var PG_POLL_INTERVAL = 15000;
 
 		// state
@@ -177,6 +179,14 @@ define(function(require, exports, module)
 				return;
 			}
 
+			var demoObjects = cDemoOrgObjects[reqParams.orgId];
+			if (demoObjects)
+			{
+				controller.notify(m.OrgObjects, demoObjects);
+
+				return;
+			}
+
 			var url = svr + 'org/' + reqParams.orgId + '/objects';
 			var data;
 
@@ -227,6 +237,34 @@ define(function(require, exports, module)
 				timerRequest = null;
 			}
 		}
+
+		cDemoOrgObjects[-999] = {
+			status: true,
+			response: [
+				{
+					hierarchy: [],
+					org_id: -999,
+					//TODO: does it make sense to generate waypoints based on passed `appCfg.areaDestinations`?
+					// smth like `appCfg.areaDestinations.slice(0).reverse()`
+					// Last location is base (at least for now)
+					waypoints: [
+						{ name: 'LAX Terminal #1', lat: 33.9451076, lng: -118.4032515 }
+						, { name: 'LAX Terminal #3 Lower Level FlyAway Stop', lat: 33.9438901, lng: -118.4060479 }
+						, { name: 'LAX Terminal #5 Lower Level FlyAway Stop', lat: 33.9426841, lng: -118.4046578 }
+						, { name: 'Holiday Inn Los Angeles Gateway - Torrance, 19800 S Vermont Ave, Torrance, CA 90502, USA', lat: 33.8507901, lng: -118.306608 }
+					],
+					last_modified_by: 0,
+					group_name: 'demoshuttle',
+					access: 'public',
+					last_modified: 1498017300352,
+					created_time: 1498017215788,
+					creator_agent_id: 0,
+					_id: 2,
+					type: 'route'
+				}
+			],
+			time: Date.now()
+		};
 	}
 
 	module.exports = PublicGroupController;

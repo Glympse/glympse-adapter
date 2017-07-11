@@ -201,7 +201,7 @@ define(function(require, exports, module)
 
 			// Set up the publishable config
 			var extViewerCfg = lib.generateClone(cfgViewer);
-			delete extViewerCfg['apiKey'];	// Delete sensitive info
+			delete extViewerCfg.apiKey;	// Delete sensitive info
 			publishedConfig = { viewer: extViewerCfg, published: lib.generateClone(cfg.published) };
 
 			// On connect, advertise interfaces + publishable config settings
@@ -445,12 +445,19 @@ define(function(require, exports, module)
 				case m.InviteAdded:
 				case m.InviteRemoved:
 				{
-					targetCards = mapCardTicketInvites[args.id] || [];
-
-					// send event for each card (same user can share same inviteCode to different cards)
-					for (i = targetCards.length - 1; i >= 0; i--)
+					if (inviteCards || cardsMode)
 					{
-						sendEvent(msg, $.extend({card: targetCards[i]}, args));
+						targetCards = mapCardTicketInvites[args.id] || [];
+
+						// send event for each card (same user can share same inviteCode to different cards)
+						for (i = targetCards.length - 1; i >= 0; i--)
+						{
+							sendEvent(msg, $.extend({ card: targetCards[i] }, args));
+						}
+					}
+					else
+					{
+						sendEvent(msg, args);
 					}
 					//dbg(msg, args);//(msg === m.DataUpdate) ? args : undefined);
 					break;

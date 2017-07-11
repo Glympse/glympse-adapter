@@ -18,14 +18,14 @@ define(function(require, exports, module)
 	{
 		var result = null;
 
-		if (data && data.response)
+		if (data && (data.response || data.body))
 		{
 			result = { status: false, response: {} };
 
 			if (data.result === 'ok')
 			{
 				result.status = true;
-				result.response = data.response;
+				result.response = (data.response || data.body);
 				result.time = data.meta && data.meta.time;
 			}
 

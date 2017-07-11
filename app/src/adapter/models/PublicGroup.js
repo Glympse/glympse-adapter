@@ -11,6 +11,8 @@ define(function(require, exports, module)
 
 	var m = Defines.MSG;
 
+	var cDemoGroups;
+
 	// Exported class
 	function PublicGroup(controller, account, groupName, cfg)
 	{
@@ -32,7 +34,7 @@ define(function(require, exports, module)
 		var loaded = false;
 		var next = 0;
 		var lastUpdate = 0;
-		var demoGroup = PublicGroup._DemoGroups[groupName.toString().toLowerCase()];
+		var demoGroup = cDemoGroups[groupName.toString().toLowerCase()];
 		var users = [];
 
 		var that = this;
@@ -196,9 +198,9 @@ define(function(require, exports, module)
 								if (user)
 								{
 									// If so, queue to remove the old invite and replace with the new one
-									var swap = { user: u.id, invOld: user.invite, invNew: inv };
+									var swap = { user: user.id, invOld: user.invite, invNew: inv };
 									dbg('>> Invite swap: ', swap);
-									invitesSwapped.push(swap)
+									invitesSwapped.push(swap);
 									user.invite = inv;
 								}
 								else
@@ -254,17 +256,17 @@ define(function(require, exports, module)
 					var u = users[i];
 					for (var j = len - 1; j >= 0; j--)
 					{
-						var m = mbrs[j];
+						var mem = mbrs[j];
 
-						if (u.id === m.id)
+						if (u.id === mem.id)
 						{
 							// Check if we have a new invite code for an existing user
-							if (u.invite !== m.invite)
+							if (u.invite !== mem.invite)
 							{
-								var swap = { user: u.id, invOld: u.invite, invNew: m.invite };
+								var swap = { user: u.id, invOld: u.invite, invNew: mem.invite };
 								dbg('** Invite swap: ', swap);
-								u.invite = m.invite;
-								invitesSwapped.push(swap)
+								u.invite = mem.invite;
+								invitesSwapped.push(swap);
 							}
 
 							// User still exists in the current list, so don't remove
@@ -320,7 +322,7 @@ define(function(require, exports, module)
 		}
 	}
 
-	PublicGroup._DemoGroups = {
+	cDemoGroups = {
 		bryanaroundseattle: {
 			status: true,
 			response: {
@@ -364,7 +366,10 @@ define(function(require, exports, module)
 					{ id: 'DNA7-4HDZ-03WH0', invite: 'demobot0' }
 				],
 				public: true,
-				name: 'DemoShuttle'
+				name: 'DemoShuttle',
+				branding: {
+					org_id: -999
+				}
 			},
 			time: Date.now()
 		}

@@ -187,7 +187,7 @@
 		output[(input.length >> 2) - 1] = undefined;
 		for (i = 0; i < output.length; i += 1)
 		{
-			output[i] = 0
+			output[i] = 0;
 		}
 		var length8 = input.length * 8;
 		for (i = 0; i < length8; i += 8)
@@ -253,11 +253,11 @@
 		define(function()
 		{
 			return md5;
-		})
+		});
 	}
 	else if (typeof module === 'object' && module.exports)
 	{
-		module.exports = md5
+		module.exports = md5;
 	}
 	else
 	{

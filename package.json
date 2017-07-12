@@ -1,7 +1,7 @@
 {
   "name": "glympse-adapter",
   "description": "Web-based adapter for handling various Glympse-related functionality",
-  "version": "2.6.1",
+  "version": "2.7.0",
   "homepage": "https://github.com/Glympse/glympse-adapter",
   "license": "BSD-Protection",
   "authors": [

@@ -87,6 +87,11 @@ define(function(require, exports, module)
 			return 'PublicGroup: ' + JSON.stringify({ name: idGroup, numUsers: users.length, numInvites: this.getInvites().length });
 		};
 
+		this.toJSON = function()
+		{
+			return { name: idGroup, users: users, invites: this.getInvites() };
+		};
+
 
 		///////////////////////////////////////////////////////////////////////////////
 		// UTILITY

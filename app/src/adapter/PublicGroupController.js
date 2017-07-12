@@ -113,7 +113,8 @@ define(function(require, exports, module)
 						// Optionally remove invites from the map as well
 						if (removeInvites)
 						{
-							setTimeout(function()
+							// Need to ensure this callback occurs *after* the current thread of execution completes
+							raf.setTimeout(function()
 							{
 								controller.notify(Defines.MAP.REQUESTS.removeInvites, invites.join(';'));
 							}, 10);
@@ -133,29 +134,28 @@ define(function(require, exports, module)
 				case r.getGroups:
 				{
 					var arr = [];
+					var argsArr;
 
 					// Ensure we are comparing to all lower-cased group names
 					if (Array.isArray(args))
 					{
-						var newArr = []
+						argsArr = []
 						for (var i = args.length - 1; i >= 0; i--)
 						{
 							if (args[i])
 							{
-								newArr.push(args[i].toLowerCase());
+								argsArr.push(args[i].toLowerCase());
 							}
 						}
-
-						args = newArr;
 					}
 
 					for (var key in groups)
 					{
 						if (groups.hasOwnProperty(key) &&
-						   (!args || (typeof args === 'string' && args.toLowerCase() === key) || (Array.isArray(args) && args.indexOf(key) >= 0))
+						   (!args || (typeof args === 'string' && args.toLowerCase() === key) || (argsArr && argsArr.indexOf(key) >= 0))
 						   )
 						{
-							arr.push(groups[key]);
+							arr.push(groups[key].toJSON());
 						}
 					}
 
@@ -198,7 +198,7 @@ define(function(require, exports, module)
 				header = groupInfo;
 			}
 
-			if ((name === null || name === undefined) && !header)
+			if (!name)
 			{
 				dbg('ERROR no group name defined');
 				return false;

@@ -219,6 +219,28 @@ define(function(require, exports, module)
 			}
 		}
 
+		function getGroups()
+		{
+			var tag = '[GetGroups]';
+			var val = input.val();
+
+			if (val)
+			{
+				var groups = val.split(',');
+				if (groups.length > 1)
+				{
+					val = groups;
+				}
+			}
+
+			cfg.adapter.core.getGroups(val || null).then(function(data)
+			{
+				logEvent(tag + ' groups: ' + (val || '*all*'), data);
+			});
+
+			input.val('');
+		}
+
 		function generateClick(id, info)
 		{
 			return function()
@@ -277,6 +299,7 @@ define(function(require, exports, module)
 		$('#setApiUrl').click(generateInput('setApiServices', 'SetApiServices'));
 		$('#sendRefresh').click(refreshView);
 		$('#setPadding').click(setPadding);
+		$('#getGroups').click(getGroups);
 		$('#btnOutputClear').click(clearOutput);
 	}
 

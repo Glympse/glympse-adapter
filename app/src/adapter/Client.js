@@ -26,20 +26,21 @@ define(function(require, exports, module)
 
 		var dbg = lib.dbg('Client', cfgApp.dbg);
 
-		// state
 		var that = this;
+
+		// state
+		var account;
+		var availableServices = {};
 		var cardsController;
+		var cardsInitialized = false;
+		var coreController;
 		var cfgMonitor = { dbg: cfgApp.dbg, viewer: elementViewer };
+		var glympseLoader;
 		var invitesCard;
 		var invitesTicket;
 		var invitesReferences = {};
-		var glympseLoader;
 		var mapCardTicketInvites = {};
-		var cardsInitialized = false;
 		var viewerMonitor;
-		var coreController;
-		// var authToken;
-		var account;
 
 		var progressCurrent = 0;
 		var progressTotal = 0;
@@ -82,6 +83,11 @@ define(function(require, exports, module)
 		///////////////////////////////////////////////////////////////////////////////
 		// PUBLICS
 		///////////////////////////////////////////////////////////////////////////////
+
+		this.getService = function(id)
+		{
+			return availableServices[id];
+		};
 
 		/**
 		 * Set up the client portion of the adapter
@@ -135,6 +141,7 @@ define(function(require, exports, module)
 				var idApi = aid.id.toLowerCase();
 				var listApis = [];
 
+				availableServices[idApi] = aid.targ;
 				requests[idApi] = generateRequestAction(aid.targ);
 
 				// Generate public APIs from static internal interfaces
@@ -646,7 +653,8 @@ define(function(require, exports, module)
 		{
 			return function(data)
 			{
-				return (targ.cmd(data.id, data.args) || true);
+				var result = targ.cmd(data.id, data.args);
+				return ((result !== undefined) ? result : true);
 			};
 		}
 

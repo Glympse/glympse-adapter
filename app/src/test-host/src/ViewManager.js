@@ -88,7 +88,7 @@ define(function(require, exports, module)
 		function logEvent(tag, data)
 		{
 			var div = $(document.createElement('pre'));
-			div.html((tag + ((!data) ? '' : ('\n' + ((typeof data === 'string') ? data : JSON.stringify(data, null, '  '))))).replace(/(,:)/g , '$1&#8203;') + '\n ');
+			div.html((tag + ((data === undefined) ? '' : ('\n' + ((typeof data === 'string') ? data : JSON.stringify(data, null, '  '))))).replace(/(,:)/g , '$1&#8203;') + '\n ');
 			outputText.append(div);
 			outputText.stop().animate({ scrollTop: outputText[0].scrollHeight }, 250);
 		}
@@ -150,6 +150,25 @@ define(function(require, exports, module)
 				cfg.adapter.core[method](val).then(function(data)
 				{
 					logEvent('[' + output + '] val=' + val, data);
+				});
+
+				input.val('');
+			}
+			else
+			{
+				logEvent('[' + output + '] ERROR: Need input!');
+			}
+		}
+
+		function removeGroup()
+		{
+			var val = input.val();
+			if (val)
+			{
+				var params = { name: val, removeInvites: true };
+				cfg.adapter.core['removeGroup'](params).then(function(data)
+				{
+					logEvent('[RemoveGroup] params=' + JSON.stringify(params), data);
 				});
 
 				input.val('');
@@ -254,6 +273,7 @@ define(function(require, exports, module)
 		$('#addTopic').click(generateInput('addTwitterTopics', 'AddTwitterTopics'));
 		$('#addUser').click(generateInput('addTwitterUsers', 'AddTwitterUsers'));
 		$('#removeInvite').click(generateInput('removeInvites', 'RemoveInvites'));
+		$('#removeGroup').click(removeGroup);
 		$('#setApiUrl').click(generateInput('setApiServices', 'SetApiServices'));
 		$('#sendRefresh').click(refreshView);
 		$('#setPadding').click(setPadding);

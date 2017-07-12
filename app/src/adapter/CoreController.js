@@ -73,14 +73,24 @@ define(function(require, exports, module)
 					break;
 				}
 
+				// FIXME: Generalize this in the default handler
+				case Defines.MAP.REQUESTS.removeInvites:
+				{
+					var mapSvc = controller.getService('map');
+					if (mapSvc)
+					{
+						return mapSvc.cmd(msg, args);
+					}
+
+					break;
+				}
+
 				default:
 				{
 					dbg('Unknown msg: "' + msg + '"', args);
 					break;
 				}
 			}
-
-			return null;
 		};
 
 		this.cmd = function(cmd, args)
@@ -93,26 +103,15 @@ define(function(require, exports, module)
 				}
 
 				case r.addGroup:
+				case r.getGroups:
+				case r.removeGroup:
 				{
 					if (!groupController)
 					{
 						groupController = new GroupController(this, cfg);
 					}
 
-					groupController.cmd(cmd, args);
-					break;
-				}
-
-				case r.removeGroup:
-				case r.getGroups:
-				{
 					return groupController.cmd(cmd, args);
-				}
-
-				case r.getGroup:
-				{
-					console.log('ERROR: getGroup() interface NOT_IMPL');
-					break;
 				}
 
 				case r.getOrgObjects:

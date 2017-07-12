@@ -44,11 +44,6 @@ define(function(require, exports, module)
 		// PROPERTIES
 		///////////////////////////////////////////////////////////////////////////////
 
-		this.getUsers = function()
-		{
-			return users;
-		};
-
 		this.getInvites = function()
 		{
 			for (var i = users.length - 1, invites = []; i >= 0; i--)
@@ -57,6 +52,16 @@ define(function(require, exports, module)
 			}
 
 			return invites;
+		};
+
+		this.getName = function()
+		{
+			return idGroup;
+		};
+
+		this.getUsers = function()
+		{
+			return users;
 		};
 
 
@@ -77,9 +82,9 @@ define(function(require, exports, module)
 			}
 		};
 
-		this.getName = function()
+		this.toString = function()
 		{
-			return idGroup;
+			return 'PublicGroup: ' + JSON.stringify({ name: idGroup, numUsers: users.length, numInvites: this.getInvites().length });
 		};
 
 

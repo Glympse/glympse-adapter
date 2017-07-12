@@ -38,6 +38,11 @@ define(function(require, exports, module)
 
 		function run(ctime)
 		{
+			if (handle.cancel)
+			{
+				return;
+			}
+
 			if (!performance)
 			{
 				ctime = new Date().getTime();
@@ -60,12 +65,13 @@ define(function(require, exports, module)
 	 * Emulate window.clearTimeout via RAF, if available. Polyfills to
 	 * regular window.clearTimeout if RAF is not available. Assumes RAF has
 	 * already been polyfilled as necessary.
-	 * @param {object} handle Handle returned from window.rafTimeout
+	 * @param {object} handle Handle returned from window.requestAnimationFrame
 	 */
 	function rafClearTimeout(handle)
 	{
 		if (handle && handle.raf)
 		{
+			handle.cancel = true;
 			w.cancelAnimationFrame(handle.raf);
 		}
 		else
@@ -100,12 +106,18 @@ define(function(require, exports, module)
 			return w.setInterval(fn, delay);
 		}
 
-		var start = delay + new Date().getTime();
+		var targetTime = ((performance && performance.now()) || new Date().getTime()) + delay;
+
 		handle = handle || {};	// Update previous reference
 
-		function run()
+		function run(ctime)
 		{
-			if (start <= new Date().getTime())
+			if (handle.cancel)
+			{
+				return;
+			}
+
+			if (ctime >= targetTime)
 			{
 				fn.call();
 				rafSetInterval(fn, delay, handle);
@@ -129,6 +141,7 @@ define(function(require, exports, module)
 	{
 		if (handle && handle.raf)
 		{
+			handle.cancel = true;
 			w.cancelAnimationFrame(handle.raf);
 		}
 		else

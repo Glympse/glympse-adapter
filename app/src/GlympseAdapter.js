@@ -30,6 +30,7 @@ define(function(require, exports, module)
 
 		var cfgApp = (cfg && cfg.app) || {};
 		var cfgAdapter = (cfg && cfg.adapter) || {};
+		var cfgViewer = (cfg && cfg.viewer) || {};
 		var dbg = lib.dbg(adapterLabel, cfgApp.dbg);
 
 		var client;			// client mode
@@ -40,6 +41,12 @@ define(function(require, exports, module)
 
 		var glympserLoader = null;
 		var version = VersionInfo.version;
+
+		if (cfgAdapter.appName && cfgAdapter.appVersion && !cfgViewer.appName && !cfgViewer.appVersion)
+		{
+			cfgViewer.appName = cfgAdapter.appName;
+			cfgViewer.appVersion = cfgAdapter.appVersion;
+		}
 
 		cfgAdapter.appName = cfgAdapter.appName || adapterLabel;
 		cfgAdapter.appVersion = cfgAdapter.appVersion || version;

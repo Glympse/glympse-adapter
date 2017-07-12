@@ -92,7 +92,7 @@ define(function(require, exports, module)
 
 			REQUESTS: {
 				addGroup: 'addGroup'
-				, getGroup: 'getGroup'
+				, getGroups: 'getGroups'
 				, removeGroup: 'removeGroup'
 				, getOrgObjects: 'getOrgObjects'
 			}

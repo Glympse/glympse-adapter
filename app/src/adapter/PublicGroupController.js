@@ -79,16 +79,87 @@ define(function(require, exports, module)
 			{
 				case r.addGroup:
 				{
-					dbg('addGroup: ', args);
-
 					if (account)
 					{
-						loadGroup(args);
-						break;
+						return loadGroup(args);
 					}
 
 					groupsToLoad.push(args);
-					break;
+					return loadGroup(args, true);
+				}
+
+				case r.removeGroup:
+				{
+					// args: { name: groupname_to_remove, removeInvites: true|false }
+
+					var invites;
+					var groupName = ((args && args.name) || '').toLowerCase();
+					var status = (groupName && groups.hasOwnProperty(groupName));
+					var removeInvites = (status && args.removeInvites) || undefined;
+
+					if (status)
+					{
+						for (var i = pollGroups.length - 1; i >= 0; i--)
+						{
+							if (pollGroups[i].getName() === groupName)
+							{
+								pollGroups.splice(i, 1);
+								break;
+							}
+						}
+
+						invites = groups[groupName].getInvites();
+
+						// Optionally remove invites from the map as well
+						if (removeInvites)
+						{
+							// Need to ensure this callback occurs *after* the current thread of execution completes
+							raf.setTimeout(function()
+							{
+								controller.notify(Defines.MAP.REQUESTS.removeInvites, invites.join(';'));
+							}, 10);
+						}
+
+						delete groups[groupName];
+						if (timerRequest && pollGroups.length === 0)
+						{
+							raf.clearInterval(timerRequest);
+							timerRequest = null;
+						}
+					}
+
+					return { status: status, group: groupName, invites: invites, removingInvites: removeInvites };
+				}
+
+				case r.getGroups:
+				{
+					var arr = [];
+					var argsArr;
+
+					// Ensure we are comparing to all lower-cased group names
+					if (Array.isArray(args))
+					{
+						argsArr = []
+						for (var i = args.length - 1; i >= 0; i--)
+						{
+							if (args[i])
+							{
+								argsArr.push(args[i].toLowerCase());
+							}
+						}
+					}
+
+					for (var key in groups)
+					{
+						if (groups.hasOwnProperty(key) &&
+						   (!args || (typeof args === 'string' && args.toLowerCase() === key) || (argsArr && argsArr.indexOf(key) >= 0))
+						   )
+						{
+							arr.push(groups[key].toJSON());
+						}
+					}
+
+					return arr;
 				}
 
 				case r.getOrgObjects:
@@ -110,7 +181,7 @@ define(function(require, exports, module)
 		// UTILITY
 		///////////////////////////////////////////////////////////////////////////////
 
-		function loadGroup(groupInfo)
+		function loadGroup(groupInfo, validate)
 		{
 			var name;
 			var header;
@@ -127,10 +198,23 @@ define(function(require, exports, module)
 				header = groupInfo;
 			}
 
+			if (!name)
+			{
+				dbg('ERROR no group name defined');
+				return false;
+			}
+
+			name = name.toLowerCase();
+
 			if (groups[name])
 			{
 				dbg('ERROR group "' + name + '" already loaded');
-				return;
+				return false;
+			}
+
+			if (validate)
+			{
+				return true;
 			}
 
 			var group = new PublicGroup(that, account, name, cfg);
@@ -146,15 +230,18 @@ define(function(require, exports, module)
 			{
 				if (group.request())
 				{
-					return;
+					return true;
 				}
 			}
 
 			pollGroups.push(group);
-			if (pollGroups.length === 1)
+
+			if (!timerRequest)
 			{
 				timerRequest = raf.setInterval(makeGroupRequests, PG_POLL_INTERVAL);
 			}
+
+			return true;
 		}
 
 		/**
@@ -183,7 +270,6 @@ define(function(require, exports, module)
 			if (demoObjects)
 			{
 				controller.notify(m.OrgObjects, demoObjects);
-
 				return;
 			}
 
@@ -204,8 +290,17 @@ define(function(require, exports, module)
 
 		function makeGroupRequests()
 		{
+			var len = pollGroups.length;
+
+			if (len === 0 && timerRequest)
+			{
+				raf.clearInterval(timerRequest);
+				timerRequest = null;
+				return;
+			}
+
 			// FIXME: Make this a batch call instead
-			for (var i = 0, len = pollGroups.length; i < len; i++)
+			for (var i = 0; i < len; i++)
 			{
 				pollGroups[i].request();
 			}

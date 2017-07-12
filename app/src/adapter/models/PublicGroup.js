@@ -44,11 +44,6 @@ define(function(require, exports, module)
 		// PROPERTIES
 		///////////////////////////////////////////////////////////////////////////////
 
-		this.getUsers = function()
-		{
-			return users;
-		};
-
 		this.getInvites = function()
 		{
 			for (var i = users.length - 1, invites = []; i >= 0; i--)
@@ -57,6 +52,16 @@ define(function(require, exports, module)
 			}
 
 			return invites;
+		};
+
+		this.getName = function()
+		{
+			return idGroup;
+		};
+
+		this.getUsers = function()
+		{
+			return users;
 		};
 
 
@@ -75,6 +80,16 @@ define(function(require, exports, module)
 			{
 				return processGroupInitial({ status: true, response: data, time: Date.now() });
 			}
+		};
+
+		this.toString = function()
+		{
+			return 'PublicGroup: ' + JSON.stringify({ name: idGroup, numUsers: users.length, numInvites: this.getInvites().length });
+		};
+
+		this.toJSON = function()
+		{
+			return { name: idGroup, users: users, invites: this.getInvites() };
 		};
 
 

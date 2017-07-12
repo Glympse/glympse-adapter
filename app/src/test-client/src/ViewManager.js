@@ -93,17 +93,15 @@ define(function(require, exports, module)
 				case appMSG.GroupLoaded:
 				{
 					dbg('[ GroupLoaded ]: ', args);
-					dbg('Group id: ' + args.group);
-
 					if (args.error)
 					{
 						dbg('Error - ' + args.error + ' -- ' + args.errorDetail);
 					}
 					else
 					{
-						dbg('Invites [ADD]: (' + args.invitesAdded.length + ') ' + args.invitesAdded);
-						dbg('Invites [DEL]: (' + args.invitesRemoved.length + ') ' + args.invitesRemoved);
-						dbg('Invites [SWP]: (' + args.invitesSwapped.length + ') ' + args.invitesSwapped);
+						dumpInvites('ADD', args.invitesAdded);
+						dumpInvites('DEL', args.invitesRemoved);
+						dumpInvites('SWP', args.invitesSwapped);
 					}
 
 					break;
@@ -120,9 +118,9 @@ define(function(require, exports, module)
 						break;
 					}
 
-					dbg('Invites [ADD]: (' + args.invitesAdded.length + ') ' + args.invitesAdded);
-					dbg('Invites [DEL]: (' + args.invitesRemoved.length + ') ' + args.invitesRemoved);
-					dbg('Invites [SWP]: (' + args.invitesSwapped.length + ') ' + args.invitesSwapped);
+					dumpInvites('ADD', args.invitesAdded);
+					dumpInvites('DEL', args.invitesRemoved);
+					dumpInvites('SWP', args.invitesSwapped);
 
 					var map = cfg.adapter.map;
 					var dInvites = args.invitesRemoved;
@@ -180,6 +178,12 @@ define(function(require, exports, module)
 
 			divLoading.css({ height: $(window).height() });
 			glympser.css({ height: h });
+		}
+
+		function dumpInvites(tag, invites)
+		{
+			var len = (invites && invites.length) || 0;
+			dbg('Invites [' + tag + ']: (' + len + ') ' + ((len) ? invites : ''));
 		}
 
 

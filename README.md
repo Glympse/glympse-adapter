@@ -771,12 +771,44 @@ specified in `GlympseAdapterDefines.CORE.REQUESTS`.
 - `addGroup(groupInfo: string|object)`: Creates a Glympse "public" group request for viewing.
   `groupInfo` can specify the group id to load (if it is a string type), or the response of
   an initial groups request (if it is an object type).
-- `getGroup(groupId: string)`: [NOT AVAILABLE]
-- `removeGroup(groupId: string)`: [NOT AVAILABLE]
-- `getOrgObjects(params: Object)`: Requests a public group's objects (public groups can specify an associated org that can have an additional configuration in its objects).
+- `getGroups(null|groupId: string|[group_1,group_2,...]: Array)`: Returns a list of monitored
+  Glympse public groups, based on the given input param (specified below). Returns an array
+  of all matched groups, each containing current ticket invite and user information.
+  - `null` | `undefined`: Returns the list of all tracked groups
+  - `groupId`: String with a single group name
+  - `[groupId0, groupId1, etc.]`: Array with a list of group names to retrieve
+- `removeGroup(groupId: string, removeInvites: bool)`: Removes a monitored Glympse public group,
+  with the option to also remove its active invites from the map, if the invites and the map
+  itself exists. `removeInvites` defaults to false (invites are not automatically removed).
+  Returns an object about the removal (see below). Some additional notes:
+  - If the `removeInvites` param is true for a valid monitored group, additional events will be
+    sent by the adapter as the invites are actually removed from the map.
+  - The `removeGroup` API does nothing to the actual Glympse public group -- it only adjusts the
+    local viewing experience.
+  ```json
+  {
+    status: true|false,   // Removal status (i.e. the groupId was a monitored group)
+    group: group_name,    // Name of the removed group
+    invites: [            // List of active invites in the group
+      "invite_id_0",
+      "invite_id_1",
+      ...
+      "invite_id_N",
+    ],
+    removingInvites: true|false // Removal status of the group's invites
+  }
+  ```
+
+- `getOrgObjects(params: Object)`: Requests a public group's `org` objects (public groups can
+  specify an associated EnRoute org that can have an additional configuration in its objects).
   Supported request params:
-  `orgId: number` id of the org to load objects for
-  `objType: string` optional type of objects to be loaded
+  ```
+  {
+    orgId: target_org_id,  // [number] - id of the org to load objects for
+    objType: object_type   // [string] - type of object to retrieve (null = all objects)
+                                         [optional]
+  }
+  ```
 
 ### GlympseAdapter.core.* endpoints (client-mode-only):
 The following APIs are only available to consumers of the GA when running in

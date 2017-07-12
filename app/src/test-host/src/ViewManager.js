@@ -88,7 +88,7 @@ define(function(require, exports, module)
 		function logEvent(tag, data)
 		{
 			var div = $(document.createElement('pre'));
-			div.html((tag + ((!data) ? '' : ('\n' + ((typeof data === 'string') ? data : JSON.stringify(data, null, '  '))))).replace(/(,:)/g , '$1&#8203;') + '\n ');
+			div.html((tag + ((data === undefined) ? '' : ('\n' + ((typeof data === 'string') ? data : JSON.stringify(data, null, '  '))))).replace(/(,:)/g , '$1&#8203;') + '\n ');
 			outputText.append(div);
 			outputText.stop().animate({ scrollTop: outputText[0].scrollHeight }, 250);
 		}
@@ -160,6 +160,25 @@ define(function(require, exports, module)
 			}
 		}
 
+		function removeGroup()
+		{
+			var val = input.val();
+			if (val)
+			{
+				var params = { name: val, removeInvites: true };
+				cfg.adapter.core['removeGroup'](params).then(function(data)
+				{
+					logEvent('[RemoveGroup] params=' + JSON.stringify(params), data);
+				});
+
+				input.val('');
+			}
+			else
+			{
+				logEvent('[' + output + '] ERROR: Need input!');
+			}
+		}
+
 		function clearOutput()
 		{
 			outputText.empty();
@@ -198,6 +217,28 @@ define(function(require, exports, module)
 			{
 				logEvent(tag + ' ERROR: Need input - integer or 4 integer array');
 			}
+		}
+
+		function getGroups()
+		{
+			var tag = '[GetGroups]';
+			var val = input.val();
+
+			if (val)
+			{
+				var groups = val.split(',');
+				if (groups.length > 1)
+				{
+					val = groups;
+				}
+			}
+
+			cfg.adapter.core.getGroups(val || null).then(function(data)
+			{
+				logEvent(tag + ' groups: ' + (val || '*all*'), data);
+			});
+
+			input.val('');
 		}
 
 		function generateClick(id, info)
@@ -254,9 +295,11 @@ define(function(require, exports, module)
 		$('#addTopic').click(generateInput('addTwitterTopics', 'AddTwitterTopics'));
 		$('#addUser').click(generateInput('addTwitterUsers', 'AddTwitterUsers'));
 		$('#removeInvite').click(generateInput('removeInvites', 'RemoveInvites'));
+		$('#removeGroup').click(removeGroup);
 		$('#setApiUrl').click(generateInput('setApiServices', 'SetApiServices'));
 		$('#sendRefresh').click(refreshView);
 		$('#setPadding').click(setPadding);
+		$('#getGroups').click(getGroups);
 		$('#btnOutputClear').click(clearOutput);
 	}
 

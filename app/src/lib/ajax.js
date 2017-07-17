@@ -14,6 +14,18 @@ define(function(require, exports, module)
 		POST: { contentType: 'application/json' }
 	};
 
+	function addAuthData(authHeaderPrefix, authToken, opts)
+	{
+		if (authHeaderPrefix)
+		{
+			opts.headers.Authorization = authHeaderPrefix + authToken;
+		}
+		else
+		{
+			opts.url += ((opts.url.indexOf('?') < 0) ? '?' : '&') + 'oauth_token=' + authToken;
+		}
+	}
+
 	function parseResponse(data)
 	{
 		var result = null;
@@ -147,34 +159,22 @@ define(function(require, exports, module)
 			if (auth)
 			{
 				var useHeader = true;
-				var authHeaderPrefix = 'Bearer ';
+				var authHeaderPrefix = null;
 				if (auth.account)
 				{
 					account = auth.account;
 					// TRUE if not exact FALSE is passed
 					useHeader = (auth.useHeader !== false);
 
-					// FALSE if not exact TRUE is passed
-					if (useHeader && (auth.useGlympseAuthHeader === true))
+					if (useHeader)
 					{
-						authHeaderPrefix = 'Glympse ';
+						// FALSE if not exact TRUE is passed
+						authHeaderPrefix = (auth.useGlympseAuthHeader === true) ? 'Glympse ' : 'Bearer ';
 					}
 				}
 				else
 				{
 					account = auth;
-				}
-
-				if (useHeader)
-				{
-					options.beforeSend = function(request)
-					{
-						request.setRequestHeader('Authorization', authHeaderPrefix + account.getToken());
-					};
-				}
-				else
-				{
-					options.url += ((options.url.indexOf('?') < 0) ? '?' : '&') + 'oauth_token=' + account.getToken();
 				}
 			}
 
@@ -185,12 +185,35 @@ define(function(require, exports, module)
 				attempts: ((retryOnError === false) ? 1 : MAX_ATTEMPTS),
 				retry: function()
 				{
-					// console.debug('[ajax] retry', options);
+					if (account && account.getToken())
+					{
+						addAuthData(authHeaderPrefix, account.getToken(), options);
+					}
 					$.ajax(options).always(processResponse.call(context, account));
 				}
 			};
 
-			$.ajax(options).always(processResponse.call(context, account));
+			if (!account || account.getToken())
+			{
+				// try now as we have all data
+				context.retry();
+			}
+			else
+			{
+				account.generateToken(function(authResult)
+				{
+					if (authResult.status)
+					{
+						// try after login when auth token is set
+						context.retry();
+					}
+					else
+					{
+						// resolve with auth status in case of error on login
+						context.request.resolve(authResult);
+					}
+				});
+			}
 
 			return context.request;
 		},

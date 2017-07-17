@@ -166,7 +166,7 @@ define(function(require, exports, module)
 					// TRUE if not exact FALSE is passed
 					if (auth.useHeader !== false)
 					{
-						// FALSE if not exact TRUE is passed
+						// Two definable types of auth headers..
 						authHeaderPrefix = (auth.useGlympseAuthHeader === true) ? 'Glympse ' : 'Bearer ';
 					}
 				}

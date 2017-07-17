@@ -5,6 +5,7 @@ define(function(require, exports, module)
 	// defines
 	var Defines = require('glympse-adapter/GlympseAdapterDefines');
 	var lib = require('glympse-adapter/lib/utils');
+	var raf = require('glympse-adapter/lib/rafUtils');
 	var m = Defines.MSG;
 	var s = Defines.STATE;
 	var r = Defines.MAP.REQUESTS;
@@ -30,13 +31,12 @@ define(function(require, exports, module)
 					  ];	// Known/tracked properties
 
 		// state
-		var timerEnd;
 		var viewerApp;
 		var viewerElement;
 
 		var that = this;
 		var cmdQueue = [];
-		var props = { };
+		var props = {};
 
 		var dbg = lib.dbg('MapController', cfg.dbg);
 
@@ -236,7 +236,7 @@ define(function(require, exports, module)
 
 			if (!props[idInvite])
 			{
-				props[idInvite] = { };
+				props[idInvite] = { _timer: 0 };
 				//console.log('New props for ' + idInvite);
 			}
 
@@ -333,9 +333,22 @@ define(function(require, exports, module)
 
 		function viewerInviteRemoved(e)
 		{
-			//dbg('InviteRemoved', e.detail);
-			e.detail.data = undefined;
-			controller.notify(m.InviteRemoved, e.detail);
+			var detail = (e && e.detail) || {};
+			//dbg('InviteRemoved', detail);
+			var id = detail.id;
+			if (id)
+			{
+				var prop = props[id];
+				if (prop && prop._timer)
+				{
+					raf.clearTimeout(prop._timer);
+				}
+
+				delete props[id]
+			}
+
+			detail.data = undefined;
+			controller.notify(m.InviteRemoved, detail);
 		}
 
 		function viewerInviteClicked(e)
@@ -362,15 +375,21 @@ define(function(require, exports, module)
 
 		function notifyExpired(idInvite, owner)
 		{
-			if (timerEnd)
+			var prop = props[idInvite];
+
+			if (!prop)
 			{
-				clearTimeout(timerEnd);
-				timerEnd = 0;
+				return;
+			}
+
+			if (prop._timer)
+			{
+				raf.clearTimeout(prop._timer);
+				prop._timer = 0;
 			}
 
 			var t = new Date().getTime();
 			var stateExpired = s.Expired.toLowerCase();
-			var prop = props[idInvite];
 			var endTime = prop[s.InviteEnd].v;
 			var propExpired = prop[stateExpired];
 			var expired = (t >= endTime);
@@ -383,19 +402,19 @@ define(function(require, exports, module)
 
 			propExpired.v = expired;
 
-			// One last check
-			if (!expired)
+			if (expired)
 			{
-				timerEnd = setTimeout(function()
-				{
-					notifyExpired(idInvite, owner);
-				}
-				, (endTime - t + 1000));
-
+				controller.infoUpdate(s.Expired, idInvite, owner, t, expired);
 				return;
 			}
 
-			controller.infoUpdate(s.Expired, idInvite, owner, t, expired);
+			// If not immediately expired, set up a timer for when it should,
+			// in case we don't get another expired update
+			prop._timer = raf.setTimeout(function()
+			{
+				notifyExpired(idInvite, owner);
+			}
+			, (endTime - t + 1000));
 		}
 	}
 

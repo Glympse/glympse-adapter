@@ -154,19 +154,17 @@ define(function(require, exports, module)
 		makeRequest: function makeRequest(jqOptions, auth, retryOnError)
 		{
 			var account;
+			var authHeaderPrefix;
 			var options = $.extend({}, DEFAULT_OPTIONS.ALL, jqOptions);
 
 			if (auth)
 			{
-				var useHeader = true;
-				var authHeaderPrefix = null;
 				if (auth.account)
 				{
 					account = auth.account;
-					// TRUE if not exact FALSE is passed
-					useHeader = (auth.useHeader !== false);
 
-					if (useHeader)
+					// TRUE if not exact FALSE is passed
+					if (auth.useHeader !== false)
 					{
 						// FALSE if not exact TRUE is passed
 						authHeaderPrefix = (auth.useGlympseAuthHeader === true) ? 'Glympse ' : 'Bearer ';
@@ -185,9 +183,10 @@ define(function(require, exports, module)
 				attempts: ((retryOnError === false) ? 1 : MAX_ATTEMPTS),
 				retry: function()
 				{
-					if (account && account.getToken())
+					var token = (account && account.getToken())
+					if (token)
 					{
-						addAuthData(authHeaderPrefix, account.getToken(), options);
+						addAuthData(authHeaderPrefix, token, options);
 					}
 					$.ajax(options).always(processResponse.call(context, account));
 				}

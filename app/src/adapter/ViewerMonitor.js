@@ -75,6 +75,7 @@ define(function(require, exports, module)
 			viewerElement.addEventListener(glyEvents.INVITE_CLICKED, viewerInviteClicked, false);
 			viewerElement.addEventListener(glyEvents.INVITE_ERROR, viewerInviteError, false);
 			viewerElement.addEventListener(glyEvents.OAUTH_TOKEN_ERROR, viewerOauthTokenError, false);
+			viewerElement.addEventListener(glyEvents.ZOOM_CHANGED, viewerZoomChanged, false);
 		};
 
 		this.shutdown = function()
@@ -366,6 +367,11 @@ define(function(require, exports, module)
 		function viewerOauthTokenError(e)
 		{
 			controller.notify(m.OauthError, e.detail);
+		}
+
+		function viewerZoomChanged(e)
+		{
+			controller.notify(m.ViewerZoomChanged, e.detail);
 		}
 
 

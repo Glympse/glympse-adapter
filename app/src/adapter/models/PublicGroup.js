@@ -330,6 +330,19 @@ define(function(require, exports, module)
 
 			return userLocated;
 		}
+
+
+		// Fill demoshuttle drivers
+		if (cfg.demoDriversCount)
+		{
+			// Allowed range is [0-7]
+			var driversCount = Math.max(0, Math.min(cfg.demoDriversCount, 7));
+			var demoshuttleMembers = cDemoGroups.demoshuttle.response.members;
+			for (var i = driversCount - 1; i >= 0; i--)
+			{
+				demoshuttleMembers.push({ id: 'DNA7-4HDZ-03WH' + i, invite: 'demobot' + i })
+			}
+		}
 	}
 
 	cDemoGroups = {
@@ -372,9 +385,7 @@ define(function(require, exports, module)
 				type: 'group',
 				id: 119,
 				events: 1,
-				members: [
-					{ id: 'DNA7-4HDZ-03WH0', invite: 'demobot0' }
-				],
+				members: [],
 				public: true,
 				name: 'DemoShuttle',
 				branding: {

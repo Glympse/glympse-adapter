@@ -166,6 +166,9 @@ var cfg =
     - `maxSize`: Max size for avatar image scaling
   - `appName` - Name of the hosting application
   - `appVersion` - Version of the hosting application
+  - `demoDriversCount` - The number of drivers to return in `demoshuttle` group. Min=0 and Max=7.
+  - `demoWaypoints` - The list of waypoints which should be returned for the demo org object. 
+  The format is `[ { name: 'Stop #1', lat: 123, lng: -123 }, ... ]`. The last point is base org location.
 
 ### Custom Marker Configuration
 For the `addMarkers(cfgMarkers)` API, the `cfgMarkers` object is of the following

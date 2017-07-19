@@ -339,14 +339,11 @@ define(function(require, exports, module)
 				{
 					hierarchy: [],
 					org_id: -999,
-					//TODO: does it make sense to generate waypoints based on passed `appCfg.areaDestinations`?
-					// smth like `appCfg.areaDestinations.slice(0).reverse()`
-					// Last location is base (at least for now)
-					waypoints: [
-						{ name: 'LAX Terminal #1', lat: 33.9451076, lng: -118.4032515 }
-						, { name: 'LAX Terminal #3 Lower Level FlyAway Stop', lat: 33.9438901, lng: -118.4060479 }
-						, { name: 'LAX Terminal #5 Lower Level FlyAway Stop', lat: 33.9426841, lng: -118.4046578 }
-						, { name: 'Holiday Inn Los Angeles Gateway - Torrance, 19800 S Vermont Ave, Torrance, CA 90502, USA', lat: 33.8507901, lng: -118.306608 }
+					waypoints: cfg.demoWaypoints || [
+						{ name: 'LAX Terminal #5', lat: 33.9426841, lng: -118.4046578 },
+						{ name: 'LAX Terminal #3', lat: 33.9438901, lng: -118.4060479 },
+						{ name: 'LAX Terminal #1', lat: 33.9451076, lng: -118.4032515 },
+						{ name: 'Holiday Inn Los Angeles Gateway', lat: 33.8507901, lng: -118.306608 }
 					],
 					last_modified_by: 0,
 					group_name: 'demoshuttle',

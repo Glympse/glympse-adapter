@@ -642,7 +642,7 @@ fully loaded and ready for presentation/interaction. The provided instance refer
 allows for direct access to the Glympse viewer application API and all of its
 components.
   - Note that in GA Host mode, Glympse Viewer instances are not passed
-
+- `ViewerZoomChanged`: Generates once the Glympse map control's zoom is changed. Zoom value is passed as an argument.
 
 ## Message/Event flow
 

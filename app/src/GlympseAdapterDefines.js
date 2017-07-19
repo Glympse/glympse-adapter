@@ -165,6 +165,7 @@ define(function(require, exports, module)
 			, StateUpdate: 'StateUpdate'
 			, ViewerInit: 'ViewerInit'
 			, ViewerReady: 'ViewerReady'
+			, ViewerZoomChanged: 'ViewerZoomChanged'
 		}
 
 
@@ -201,7 +202,8 @@ define(function(require, exports, module)
 		g.broadcastTypes || (g.broadcastTypes = {
 								DATA: 'DATA',
 								ETA: 'ETA',
-								INVITE_STATUS: 'INVITE_STATUS'
+								INVITE_STATUS: 'INVITE_STATUS',
+								ZOOM: 'ZOOM'
 							});
 		g.GlympseAdapterDefines || (g.GlympseAdapterDefines = Defines);
 		/* eslint-enable no-unused-expressions */

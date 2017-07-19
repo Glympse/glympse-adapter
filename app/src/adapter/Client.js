@@ -301,6 +301,7 @@ define(function(require, exports, module)
 					break;
 				}
 
+				case m.ViewerZoomChanged:
 				case m.CardsInitEnd:
 				{
 					sendEvent(msg, args);

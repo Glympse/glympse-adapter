@@ -2,6 +2,7 @@
 
 version |date        |notes
 :-------|:-----------|:------
+2.8.0   | 2017/07/19 | New `ViewerZoomChanged` event + bot group options
 2.7.2   | 2017/07/17 | Missing auth / removed ticket invite bugfixes
 2.7.1   | 2017/07/12 | Propagate app info through to viewer
 2.7.0   | 2017/07/12 | Add removeGroup and getGroups APIs for additional handling of Glympse public groups + various bugfixes.

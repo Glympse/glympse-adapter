@@ -43,6 +43,22 @@ define(function(require, exports, module)
 					dbg('--> ADAPTER READY', args);
 					invitesCard = args.cards;
 					invitesGlympse = args.glympses;
+
+					// adapter.core.getETAInfo([
+					// 	{
+					// 		start: { name: 'Holiday Inn Los Angeles Gateway', lat: 33.8507901, lng: -118.306608 },
+					// 		end: { name: 'LAX Terminal #1', lat: 33.9451076, lng: -118.4032515 }
+					// 	},
+					// 	{
+					// 		start: { name: 'LAX Terminal #1', lat: 33.9451076, lng: -118.4032515 },
+					// 		end: { name: 'LAX Terminal #3', lat: 33.9438901, lng: -118.4060479 }
+					// 	},
+					// 	{
+					// 		start: { name: 'LAX Terminal #3', lat: 33.9438901, lng: -118.4060479 },
+					// 		end: { name: 'Holiday Inn Los Angeles Gateway', lat: 33.8507901, lng: -118.306608 }
+					// 	}
+					// ]);
+
 					break;
 				}
 

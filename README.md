@@ -526,6 +526,8 @@ using GA in host-mode) that are sent by the adapter (defined in the
   - `n`: Property id
   - `v`: Property value (may be default type, or a custom Object with additional
   members)
+- `ETAInfo`: Generates when ETA info was fetched in response to `getETAInfo` request to the `core` endpoint, 
+  with information the loaded ETAs. The order in array the same as in request args.
 - `GroupLoaded`: Generated after an `addGroup` command is sent to the `core` endpoint, with information
   about the just-loaded Glympse public group. For normal responses, the `args` payload will look something
   like:
@@ -774,6 +776,17 @@ specified in `GlympseAdapterDefines.CORE.REQUESTS`.
 - `addGroup(groupInfo: string|object)`: Creates a Glympse "public" group request for viewing.
   `groupInfo` can specify the group id to load (if it is a string type), or the response of
   an initial groups request (if it is an object type).
+- `getETAInfo(routes)`: Request the ETAs for specific routes. The routes format is
+    ```
+    [
+        { 
+            start: { lat: number, lng: number }, // start point of the route 
+            end: { lat: number, lng: number }    // end point of the route
+        },
+        ...
+    ]
+    ```
+  Results will be returned as `ETAInfo` event. The order of ETAs in results will be the same as in request agrs.
 - `getGroups(null|groupId: string|[group_1,group_2,...]: Array)`: Returns a list of monitored
   Glympse public groups, based on the given input param (specified below). Returns an array
   of all matched groups, each containing current ticket invite and user information.

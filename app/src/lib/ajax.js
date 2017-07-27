@@ -154,6 +154,7 @@ define(function(require, exports, module)
 		makeRequest: function makeRequest(jqOptions, auth, retryOnError)
 		{
 			var account;
+			var useHeader;
 			var authHeaderPrefix;
 			var options = $.extend({}, DEFAULT_OPTIONS.ALL, jqOptions);
 
@@ -162,17 +163,19 @@ define(function(require, exports, module)
 				if (auth.account)
 				{
 					account = auth.account;
-
 					// TRUE if not exact FALSE is passed
-					if (auth.useHeader !== false)
-					{
-						// Two definable types of auth headers..
-						authHeaderPrefix = (auth.useGlympseAuthHeader === true) ? 'Glympse ' : 'Bearer ';
-					}
+					useHeader = (auth.useHeader !== false);
 				}
 				else
 				{
 					account = auth;
+					useHeader = true;
+				}
+
+				if (useHeader)
+				{
+					// Two definable types of auth headers..
+					authHeaderPrefix = (auth.useGlympseAuthHeader === true) ? 'Glympse ' : 'Bearer ';
 				}
 			}
 
@@ -183,7 +186,7 @@ define(function(require, exports, module)
 				attempts: ((retryOnError === false) ? 1 : MAX_ATTEMPTS),
 				retry: function()
 				{
-					var token = (account && account.getToken())
+					var token = (account && account.getToken());
 					if (token)
 					{
 						addAuthData(authHeaderPrefix, token, options);

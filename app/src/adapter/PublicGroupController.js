@@ -340,11 +340,12 @@ define(function(require, exports, module)
 					hierarchy: [],
 					org_id: -999,
 					waypoints: cfg.demoWaypoints || [
-						{ name: 'LAX Terminal #5', lat: 33.9426841, lng: -118.4046578 },
-						{ name: 'LAX Terminal #3', lat: 33.9438901, lng: -118.4060479 },
-						{ name: 'LAX Terminal #1', lat: 33.9451076, lng: -118.4032515 },
-						{ name: 'Holiday Inn Los Angeles Gateway', lat: 33.8507901, lng: -118.306608 }
+						{ name: 'LAX Terminal #5', lat: 33.9426841, lng: -118.4046578, stopTime: 120000 },
+						{ name: 'LAX Terminal #3', lat: 33.9438901, lng: -118.4060479, stopTime: 240000 },
+						{ name: 'LAX Terminal #1', lat: 33.9451076, lng: -118.4032515 }, //No stopTime to test defaultStopTime
+						{ name: 'Holiday Inn Los Angeles Gateway', lat: 33.8507901, lng: -118.306608, stopTime: 200000 }
 					],
+					defaultStopTime: 180000,
 					last_modified_by: 0,
 					group_name: 'demoshuttle',
 					access: 'public',

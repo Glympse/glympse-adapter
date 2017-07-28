@@ -4,6 +4,7 @@ define(function(require, exports, module)
 
 	// defines
 	var lib = require('glympse-adapter/lib/utils');
+	var ajax = require('glympse-adapter/lib/ajax');
 	var Defines = require('glympse-adapter/GlympseAdapterDefines');
 
 	var m = Defines.MSG;
@@ -19,6 +20,8 @@ define(function(require, exports, module)
 	{
 		// consts
 		var dbg = lib.dbg('CoreController', cfg.dbg);
+
+		var svr = cfg.svcGlympse;
 
 		// state
 		var account = new Account(this, cfg);
@@ -161,6 +164,12 @@ define(function(require, exports, module)
 					account.delete();
 					break;
 				}
+
+				case r.getEtaInfo:
+				{
+					getEtaInfo(args);
+					break;
+				}
 			}
 		};
 
@@ -173,6 +182,72 @@ define(function(require, exports, module)
 		///////////////////////////////////////////////////////////////////////////////
 		// UTILITY
 		///////////////////////////////////////////////////////////////////////////////
+
+		/**
+		 * Fetch ETA information to the given points
+		 *
+		 * @param {Object[]} routes - array of routes for which to calculate ETAs.
+		 *	Each object must has the following properties:
+		 *	- "start" - is a starting point in format { lat: number, lng: number }
+		 *	- "end" - is an ending point in format { lat: number, lng: number }
+		 */
+		function getEtaInfo(routes)
+		{
+			if (!routes || !routes.length)
+			{
+				dbg('ETA Info: no routes provided, nothing to calculate');
+
+				controller.notify(m.EtaInfo, {
+					status: true,
+					result: []
+				});
+
+				return;
+			}
+
+			var routeUrl = 'maps/route?';
+			var requests = [];
+			var route, start, end, params;
+
+			for (var i = 0, len = routes.length; i < len; i++)
+			{
+				route = routes[i];
+				start = route.start;
+				end = route.end;
+				params = {
+					start: start.lat + ',' + start.lng,
+					end: end.lat + ',' + end.lng,
+					fields: 'summary'
+				};
+				requests.push({
+					method: 'GET',
+					url: routeUrl + $.param(params)
+				});
+			}
+
+			ajax.batch(svr + 'batch', requests, account)
+				.then(function(responses)
+				{
+					var result = [];
+					var res, eta;
+					for (var i = 0, len = responses.length; i < len; i++)
+					{
+						res = (responses[i] || {}).result;
+						eta = null;
+
+						if (res.status)
+						{
+							eta = (((res.response || {}).summary || {}).travel_time || 0);
+						}
+
+						result.push(eta);
+					}
+
+					dbg('> ETA results:', result);
+
+					controller.notify(m.EtaInfo, result);
+				});
+		}
 
 	}
 

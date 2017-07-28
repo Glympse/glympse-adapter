@@ -547,6 +547,7 @@ define(function(require, exports, module)
 				case m.GroupLoaded:
 				case m.GroupStatus:
 				case m.OrgObjects:
+				case m.EtaInfo:
 				{
 					sendEvent(msg, args);
 					break;

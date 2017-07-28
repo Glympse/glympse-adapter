@@ -95,7 +95,7 @@ define(function(require, exports, module)
 				, getGroups: 'getGroups'
 				, removeGroup: 'removeGroup'
 				, getOrgObjects: 'getOrgObjects'
-				, getETAInfo: 'getETAInfo'
+				, getEtaInfo: 'getEtaInfo'
 			}
 
 
@@ -154,7 +154,7 @@ define(function(require, exports, module)
 			, GroupStatus: 'GroupStatus'
 			, OrgObjects: 'OrgObjects'
 
-			, ETAInfo: 'ETAInfo'
+			, EtaInfo: 'EtaInfo'
 
 			, DataUpdate: 'DataUpdate'
 			, InviteAdded: 'InviteAdded'

@@ -165,9 +165,9 @@ define(function(require, exports, module)
 					break;
 				}
 
-				case r.getETAInfo:
+				case r.getEtaInfo:
 				{
-					getETAInfo(args);
+					getEtaInfo(args);
 					break;
 				}
 			}
@@ -191,13 +191,13 @@ define(function(require, exports, module)
 		 *	- "start" - is a starting point in format { lat: number, lng: number }
 		 *	- "end" - is an ending point in format { lat: number, lng: number }
 		 */
-		function getETAInfo(routes)
+		function getEtaInfo(routes)
 		{
 			if (!routes || !routes.length)
 			{
 				dbg('ETA Info: no routes provided, nothing to calculate');
 
-				controller.notify(m.ETAInfo, {
+				controller.notify(m.EtaInfo, {
 					status: true,
 					result: []
 				});
@@ -245,7 +245,7 @@ define(function(require, exports, module)
 
 					dbg('> ETA results:', result);
 
-					controller.notify(m.ETAInfo, result);
+					controller.notify(m.EtaInfo, result);
 				});
 		}
 

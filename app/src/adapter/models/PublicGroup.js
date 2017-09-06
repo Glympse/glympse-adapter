@@ -7,7 +7,6 @@ define(function(require, exports, module)
 	var ajax = require('glympse-adapter/lib/ajax');
 
 	var Defines = require('glympse-adapter/GlympseAdapterDefines');
-	var Account = require('glympse-adapter/adapter/models/Account');
 
 	var m = Defines.MSG;
 
@@ -190,47 +189,98 @@ define(function(require, exports, module)
 					//console.log('EVENTS next = ' + next);
 
 					// Handle new invites from new/pre-existing clients, and people leaving the group
-					if (o.items)
+					var items = o.items;
+					if (items)
 					{
-						var user;
-						for (var i = o.items.length - 1; i >= 0; i--)
+						var i, len, item;
+
+						// cleanup events list first (take only latest event for particular member)
+						var events = [];
+						var members = [];
+						// order matters!
+						for (i = 0, len = items.length; i < len; i++)
 						{
-							var item = o.items[i];
-							//console.log('UPDATE type=' + item.type);
-							if (item.type === 'invite' || item.type === 'swap')
+							item = items[i];
+							switch (item.type)
 							{
-								var inv = item.invite;
-
-								// See if we already have the user of the new 'invite'
-								user = findUser(item.member);
-
-								//console.log('[INVITE]member=' + item.member + '(found=' + (user != null) + ') oldInvite=' + (user && user.invite) + ', newInvite=' + inv);
-								if (user)
+								case 'invite':
+								case 'swap':
+								case 'leave':
 								{
-									// If so, queue to remove the old invite and replace with the new one
-									var swap = { user: user.id, invOld: user.invite, invNew: inv };
-									dbg('>> Invite swap: ', swap);
-									invitesSwapped.push(swap);
-									user.invite = inv;
-								}
-								else
-								{
-									// Otherwise, they are a new user to track
-									dbg('>> ADD: ', inv);
-									invitesAdded.push(inv);
-									users.push({ id: item.member, invite: inv });
+									var mem = item.member;
+									var memIndex = members.indexOf(mem);
+
+									if (memIndex !== -1)
+									{
+										dbg('>> Cleanup outdated event: ', events[memIndex]);
+										members.splice(memIndex, 1);
+										events.splice(memIndex, 1);
+									}
+
+									members.push(mem);
+									events.push(item);
+
+									break;
 								}
 							}
-							else if (item.type === 'leave')
+						}
+
+						// proceed with clean list of events
+						var user, swap;
+						for (i = 0, len = events.length; i < len; i++)
+						{
+							item = events[i];
+							//console.log('UPDATE type=' + item.type);
+							switch (item.type)
 							{
-								//console.log('[LEAVE]member=' + item.member + ' -- found=' + (user != null));
-								// If user is leaving, remove their invite and user list entry
-								user = findUser(item.member);
-								if (user)
+								case 'invite':
+								case 'swap':
 								{
-									dbg('>> REMOVE: ', user.invite);
-									invitesRemoved.push(user.invite);
-									users.splice(users.indexOf(user), 1);
+									var inv = item.invite;
+
+									// See if we already have the user of the new 'invite'
+									user = findUser(item.member);
+
+									//console.log('[INVITE]member=' + item.member + '(found=' + (user != null) + ') oldInvite=' + (user && user.invite) + ', newInvite=' + inv);
+									if (user)
+									{
+										if (user.invite === inv)
+										{
+											dbg('>> Skip existing invite: ', inv);
+										}
+										else
+										{
+											// If so, queue to remove the old invite and replace with the new one
+											swap = { user: user.id, invOld: user.invite, invNew: inv };
+											dbg('>> Invite swap: ', swap);
+											invitesSwapped.push(swap);
+											user.invite = inv;
+										}
+									}
+									else
+									{
+										// Otherwise, they are a new user to track
+										dbg('>> ADD: ', inv);
+										invitesAdded.push(inv);
+										users.push({ id: item.member, invite: inv });
+									}
+
+									break;
+								}
+
+								case 'leave':
+								{
+									//console.log('[LEAVE]member=' + item.member + ' -- found=' + (user != null));
+									// If user is leaving, remove their invite and user list entry
+									user = findUser(item.member);
+									if (user)
+									{
+										dbg('>> REMOVE: ', user.invite);
+										invitesRemoved.push(user.invite);
+										users.splice(users.indexOf(user), 1);
+									}
+
+									break;
 								}
 							}
 						}
@@ -255,18 +305,19 @@ define(function(require, exports, module)
 				//TODO: pass brand cfg to the viewer
 			}
 
-			if (o.members)
+			var members = o.members;
+			if (members)
 			{
-				var mbrs = o.members;
-				var len = mbrs.length;
-				//console.log('members:' + JSON.stringify(mbrs, null, '    '));
+				var len = members.length;
+				var u, mem;
+				//console.log('members:' + JSON.stringify(members, null, '    '));
 				// Sync up existing user list with their current invites
 				for (i = users.length - 1; i >= 0; i--)
 				{
-					var u = users[i];
+					u = users[i];
 					for (var j = len - 1; j >= 0; j--)
 					{
-						var mem = mbrs[j];
+						mem = members[j];
 
 						if (u.id === mem.id)
 						{
@@ -297,20 +348,20 @@ define(function(require, exports, module)
 				// Locate and add any new users
 				for (i = len - 1; i >= 0; i--)
 				{
-					var cli = mbrs[i];
+					mem = members[i];
 
 					// Don't add a new user if they already exist in the current user list
-					if (findUser(cli.id))
+					if (findUser(mem.id))
 					{
 						continue;
 					}
 
-					if (cli.invite)
+					if (mem.invite)
 					{
 						//console.log('id=' + cli.id + ', invite=' + cli.invite);
-						users.push(cli);
-						dbg('** ADD: ', cli.invite);
-						invitesAdded.push(cli.invite);
+						users.push(mem);
+						dbg('** ADD: ', mem.invite);
+						invitesAdded.push(mem.invite);
 					}
 				}
 			}

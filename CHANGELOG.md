@@ -2,7 +2,8 @@
 
 version |date        |notes
 :-------|:-----------|:------
-2.9.0   | 2017/07/?? | BugFix for auth requests. New `core.getEtaInfo` endpoint + `EtaInfo` event.
+2.10.0  | 2017/09/08 | BugFix for handling public group events (cleanup the events queue before processing).
+2.9.0   | 2017/08/01 | BugFix for auth requests. New `core.getEtaInfo` endpoint + `EtaInfo` event.
 2.8.1   | 2017/07/19 | New `ViewerZoomChanged` event + bot group options
 2.7.2   | 2017/07/17 | Missing auth / removed ticket invite bugfixes
 2.7.1   | 2017/07/12 | Propagate app info through to viewer

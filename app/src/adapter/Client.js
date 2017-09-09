@@ -482,7 +482,10 @@ define(function(require, exports, module)
 
 						account = coreController.getAccount();
 						cfgAdapter.account = account;
-						cfgViewer.authToken = account.getToken();
+
+						var token = account.getToken();
+						cfgViewer.authToken = token;
+						cfgApp.authToken = token;
 
 						args.account = account;
 

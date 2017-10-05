@@ -207,7 +207,7 @@ define(function(require, exports, module)
 
 			var routeUrl = 'maps/route?';
 			var requests = [];
-			var route, start, end, params;
+			var route, start, end, waypoints, waypoint, wpList, params;
 
 			for (var i = 0, len = routes.length; i < len; i++)
 			{
@@ -219,6 +219,19 @@ define(function(require, exports, module)
 					end: end.lat + ',' + end.lng,
 					fields: 'summary'
 				};
+
+				waypoints = route.waypoints;
+				if (waypoints && waypoints.length)
+				{
+					wpList = [];
+					for (var j = 0, wpLen = waypoints.length; j < wpLen; j++)
+					{
+						waypoint = waypoints[j];
+						wpList.push(waypoint.lat + ',' + waypoint.lng);
+					}
+					params.waypoints = wpList.join('|');
+				}
+
 				requests.push({
 					method: 'GET',
 					url: routeUrl + $.param(params)

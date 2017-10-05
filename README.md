@@ -781,6 +781,7 @@ specified in `GlympseAdapterDefines.CORE.REQUESTS`.
     [
         { 
             start: { lat: number, lng: number }, // start point of the route 
+            waypoints: [{ lat: number, lng: number }, ...], // list of the route waypoints 
             end: { lat: number, lng: number }    // end point of the route
         },
         ...

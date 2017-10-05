@@ -186,10 +186,11 @@ define(function(require, exports, module)
 		/**
 		 * Fetch ETA information to the given points
 		 *
-		 * @param {Object[]} routes - array of routes for which to calculate ETAs.
-		 *	Each object must has the following properties:
-		 *	- "start" - is a starting point in format { lat: number, lng: number }
-		 *	- "end" - is an ending point in format { lat: number, lng: number }
+		 * @param {Object[]} routes - array of routes for which ETAs are calculated.
+		 *	Each object must have the following properties:
+		 *	- "start" - start point in format { lat: number, lng: number }
+		 *	- "end" - end point in format { lat: number, lng: number }
+		 *	- "waypoints" - array of waypoints between start and end in format [{ lat: number, lng: number }, ...]
 		 */
 		function getEtaInfo(routes)
 		{

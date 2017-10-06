@@ -186,10 +186,11 @@ define(function(require, exports, module)
 		/**
 		 * Fetch ETA information to the given points
 		 *
-		 * @param {Object[]} routes - array of routes for which to calculate ETAs.
-		 *	Each object must has the following properties:
-		 *	- "start" - is a starting point in format { lat: number, lng: number }
-		 *	- "end" - is an ending point in format { lat: number, lng: number }
+		 * @param {Object[]} routes - array of routes for which ETAs are calculated.
+		 *	Each object must have the following properties:
+		 *	- "start" - start point in format { lat: number, lng: number }
+		 *	- "end" - end point in format { lat: number, lng: number }
+		 *	- "waypoints" - array of waypoints between start and end in format [{ lat: number, lng: number }, ...]
 		 */
 		function getEtaInfo(routes)
 		{
@@ -207,7 +208,7 @@ define(function(require, exports, module)
 
 			var routeUrl = 'maps/route?';
 			var requests = [];
-			var route, start, end, params;
+			var route, start, end, waypoints, waypoint, wpList, params;
 
 			for (var i = 0, len = routes.length; i < len; i++)
 			{
@@ -219,6 +220,19 @@ define(function(require, exports, module)
 					end: end.lat + ',' + end.lng,
 					fields: 'summary'
 				};
+
+				waypoints = route.waypoints;
+				if (waypoints && waypoints.length)
+				{
+					wpList = [];
+					for (var j = 0, wpLen = waypoints.length; j < wpLen; j++)
+					{
+						waypoint = waypoints[j];
+						wpList.push(waypoint.lat + ',' + waypoint.lng);
+					}
+					params.waypoints = wpList.join('|');
+				}
+
 				requests.push({
 					method: 'GET',
 					url: routeUrl + $.param(params)

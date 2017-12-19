@@ -226,10 +226,23 @@ define(function(require, exports, module)
 			var data = [];
 			var ddata = detail.data || [];
 			var owner = detail.owner;
-			var i, ilen;
+			var i, ilen, iprop, ipropName, ipropIndex;
 
+			var newProps = [];
 			for (i = 0, ilen = ddata.length; i < ilen; i++)
 			{
+				iprop = ddata[i];
+				ipropName = iprop.n;
+				ipropIndex = newProps.indexOf(ipropName);
+
+				if (ipropIndex !== -1)
+				{
+					newProps.splice(ipropIndex, 1);
+					data.splice(ipropIndex, 1);
+					dbg('> Cleaned-up outdated prop:' + ipropName);
+				}
+
+				newProps.push(ipropName);
 				data.push($.extend({}, ddata[i]));
 			}
 

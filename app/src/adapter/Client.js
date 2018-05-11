@@ -126,6 +126,7 @@ define(function(require, exports, module)
 			var intInterfaces = { map: {}, cards: {}, core: {}, app: {} };
 
 			intInterfaces.app.getConfig = getConfig;
+			intInterfaces.app.sendOasisMessage = sendOasisMessage;
 
 			// FIXME: This shouldn't go here
 			intInterfaces.map[ViewerMonitor.GetInviteProperties] = getInviteProperties;

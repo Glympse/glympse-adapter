@@ -900,6 +900,13 @@ Access to these endpoints can be made via the `ext` property of the adapter inst
 - By default, no custom endpoints are provided by the GA
 
 
+### GlympseAdapter.app.* endpoints (client-mode-only):
+The following APIs are only available to consumers of the GA when running in
+client-mode.
+
+- `sendOasisMessage(id, val)`: Sends message to connected GA running in "host" mode 
+
+
 ### GlympseAdapter.app.* endpoints (host/client-mode):
 Below is a list of all of the exposed GA APIs with respect to always available
 app-based APIs. They generally pertain to the overall app configuration and structure:

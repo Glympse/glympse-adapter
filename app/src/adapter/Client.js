@@ -192,7 +192,8 @@ define(function(require, exports, module)
 
 			// Add local app interfaces
 			var appMethods = {
-				getConfig: getConfig
+				getConfig: getConfig,
+				sendOasisMessage: sendOasisMessage
 			};
 
 			requests.app = function(data)

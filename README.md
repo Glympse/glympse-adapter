@@ -308,6 +308,10 @@ $(window).ready(function()
 			StateUpdate: stateUpdate,
 			ViewerInit: viewerInit,
 			ViewerReady: viewerReady
+		},
+		sandbox:
+		{
+			disabled: true
 		}
 	});
 
@@ -339,6 +343,10 @@ A couple of things to note here:
   be handled if they aren't going to be used. Format is
   `{ event_id0: callback_handler0, ..., event_idN: callback_handlerN`. See the
   Host Events section below for available events that can be handled.
+- `sandbox`: Configuration of sandbox environment:
+    - `popups` `(default: false)` - allow opening windows from sandbox env
+    - `disabled` `(default: false)` - (_only for iframe adapter_) do not create actual sandbox on iframe to allow all actions from iframed app
+                   (**Note:** this is glympse specific feature, see notes [below](#project-notes))
 
 All API calls to the client-mode adapter return a Promise, allowing for async handling
 of all results. These should be treated like any baseline [Promise/A+] system:
@@ -976,6 +984,10 @@ properly use their functionality. For future maintenance, the latest commits use
 this snapshot are `4c657d15` and `5cfda622` of the `tildeio/oasis.js` and
 `tildeio/rsvp.js` repos respectively.
 
+**Important:** our copy contains few changes comparing to the original implementation:
+- `sandbox.disabled` config param is added (for oasis/iframe_adapter.js#L84).
+         It allows do not create actual "sandbox" env and therefore allows using all 
+         features of iframed content w/o any restrictions (use with caution)
 
 [HERE Javascript APIs]: https://developer.here.com/javascript-apis
 [jQuery]: http://jquery.com

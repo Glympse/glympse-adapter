@@ -40,7 +40,8 @@ define(function(require, exports, module)
 			var cfgSandbox = { url: settings.url,
 							   type: 'html',
 							   capabilities: [ idPort ],
-							   services: { }
+							   services: { },
+							   sandbox: settings.sandbox
 							 };
 
 			cfgSandbox.services[idPort] = Oasis.Service.extend(

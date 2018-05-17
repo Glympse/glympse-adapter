@@ -80,15 +80,27 @@ define("oasis/iframe_adapter",
             iframe = document.createElement('iframe'),
             sandboxAttributes = ['allow-scripts'];
 
-        if( sandbox.oasis.configuration.allowSameOrigin ) {
-          sandboxAttributes.push('allow-same-origin');
+
+        //==GLYMPSE==
+        // allow to skip using iframe's sandbox feature for safe content (like journey)
+        var useSandbox = !options || !options.sandbox || !options.sandbox.disabled;
+        if (useSandbox) {
+            if (sandbox.oasis.configuration.allowSameOrigin) {
+                sandboxAttributes.push('allow-same-origin');
+            }
+            if (options && options.sandbox && options.sandbox.popups) {
+                sandboxAttributes.push('allow-popups');
+            }
         }
-        if( options && options.sandbox && options.sandbox.popups ) {
-          sandboxAttributes.push('allow-popups');
-        }
+        //==GLYMPSE==
+
 
         iframe.name = sandbox.options.url + '?uuid=' + UUID.generate();
-        iframe.sandbox = sandboxAttributes.join(' ');
+
+        //==GLYMPSE==
+        if (useSandbox) iframe.sandbox = sandboxAttributes.join(' ');
+        //==GLYMPSE==
+
         iframe.seamless = true;
 
         // rendering-specific code
@@ -114,7 +126,10 @@ define("oasis/iframe_adapter",
         };
         addEventListener(window, 'message', iframe.errorHandler);
 
-        verifySandbox( sandbox.oasis, sandbox.options.url );
+        //==GLYMPSE==
+        if (useSandbox) verifySandbox( sandbox.oasis, sandbox.options.url );
+        //==GLYMPSE==
+
         iframe.src = sandbox.options.url;
 
         Logger.log('Initializing sandbox ' + iframe.name);

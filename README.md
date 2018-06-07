@@ -1,5 +1,18 @@
 # The Glympse Adapter
 
+- [Overview](#overview)
+- [Client Mode](#client-mode)
+- [Host Mode](#host-mode)
+- [Examples](#examples)
+- [Adapter Messages/Events](#adapter-messages/events)
+- [Message/Event flow](#message/event-flow)
+- [Adapter Endpoints](#adapter-endpoints)
+- [Available modules](#available-modules)
+- [Installation](#installation)
+- [Glympse Adapter Roadmap](#glympse-adapter-roadmap)
+- [Project Notes](#project-notes)
+- [Release a new version](#release-a-new-version)
+
 ## Overview
 
 The Glympse Adapter (GA) is a portable component that allows Javascript-based
@@ -28,7 +41,7 @@ consumers during setup.
 
 
 
-## Client-Mode
+## Client Mode
 Below descibes how to utilize the GA in "client-mode", where full access is available
 to all Viewer components, data structures, and many customization options. However, it
 also requires more care in getting going, and maintaining a clean separation from the
@@ -256,7 +269,7 @@ example custom endpoint of `customMethodExample`. This can be easily extended an
 enhanced for your needs.
 
 
-## Host-Mode
+## Host Mode
 Below descibes how to utilize the GA in "host-mode", with limited access to Viewer
 components and data structures. It runs in an iframe-based environment, providing a
 clean separation to the rest of the page in which it is embedded. That said, the
@@ -413,7 +426,7 @@ If you do not specify a handler for a particular GA event, it will not be raised
 
 
 ## Examples
-### Client mode
+### Client-mode
 An example of setting up a GA client-mode-based application can be found in
 `app/src/test-client`. This test app demonstrates various GA actions when a
 Glympse ticket/card invite is loaded.
@@ -421,7 +434,7 @@ Glympse ticket/card invite is loaded.
 This example should be used as a reference of how to invoke and interact with
 the GA in client-mode.
 
-### Host mode
+### Host-mode
 An example of setting up a GA host-mode-based application can be found in
 `app/src/test-host`. This test app demonstrates how to hook into a
 remote GA client-mode-based application and leverage interesting events that
@@ -997,3 +1010,17 @@ this snapshot are `4c657d15` and `5cfda622` of the `tildeio/oasis.js` and
 [Cordova]: http://cordova.apache.org/
 [oasis.js]: https://github.com/tildeio/oasis.js
 [rsvp.js]: https://github.com/tildeio/rsvp.js
+
+## Release a new version
+- Version information updates:
+  - `Gruntfile.js`: `data.config.moduleVersion` with the new [semantic] (MAJOR.MINOR.PATCH) version
+  - `bower.json`: `version` property (same value as used above)
+  - `package.json`: `version` property (same value as used above)
+- This `README.md` with any relevent changes
+- `CHANGELOG.md` should be updated with high-level change info
+- `grunt` should return no warnings or errors
+  - Note that `grunt` will also generate a compiled version of the GJC component, located in the root `builds/` directory
+- check in to `develop` branch with message that confirms this was a new release: 'build x.x.x'
+- switch to `master` branch and merge `develop` branch to `master` branch (don't forget to push the code)
+- generate a new release with github: Open project > Releases tab > Draft a new message. 
+Then put a new version number, select `master` branch and press "Publish release". This will also automatically create a tag.

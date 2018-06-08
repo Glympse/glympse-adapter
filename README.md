@@ -1019,7 +1019,7 @@ this snapshot are `4c657d15` and `5cfda622` of the `tildeio/oasis.js` and
 - This `README.md` with any relevent changes
 - `CHANGELOG.md` should be updated with high-level change info
 - `grunt` should return no warnings or errors
-  - Note that `grunt` will also generate a compiled version of the GJC component, located in the root `builds/` directory
+  - Note that `grunt` will also generate a compiled version of the Glympse Adapter component, located in the root `builds/` directory
 - check in to `develop` branch with message that confirms this was a new release: 'build x.x.x'
 - switch to `master` branch and merge `develop` branch to `master` branch (don't forget to push the code)
 - generate a new release with github: Open project > Releases tab > Draft a new message. 

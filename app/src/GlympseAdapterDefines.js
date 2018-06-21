@@ -181,6 +181,7 @@ define(function(require, exports, module)
 			  Avatar: 'avatar'
 			, Destination: 'destination'
 			, Eta: 'eta'
+			, EtaRange: 'eta_range'
 			, InviteEnd: 'end_time'
 			, InviteCompleted: 'completed'
 			, InviteStart: 'start_time'

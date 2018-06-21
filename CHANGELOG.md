@@ -2,6 +2,7 @@
 
 version |date        |notes
 :-------|:-----------|:------
+2.12.2  | 2018/06/21 | Added eta_range data stream property
 2.12.1  | 2018/05/17 | Added ability to skip "sandbox" using on iframe (host-mode)
 2.12.0  | 2018/05/15 | Added GlympseAdapter.app.sendOasisMessage API (for client mode only)
 2.11.1  | 2017/12/19 | Bugfix: de-duplicate invite's data-stream.

@@ -96,6 +96,7 @@ define(function(require, exports, module)
 				, removeGroup: 'removeGroup'
 				, getOrgObjects: 'getOrgObjects'
 				, getEtaInfo: 'getEtaInfo'
+				, getInviteEta: 'getInviteEta'
 			}
 
 
@@ -155,6 +156,7 @@ define(function(require, exports, module)
 			, OrgObjects: 'OrgObjects'
 
 			, EtaInfo: 'EtaInfo'
+			, InviteEta: 'InviteEta'
 
 			, DataUpdate: 'DataUpdate'
 			, InviteAdded: 'InviteAdded'

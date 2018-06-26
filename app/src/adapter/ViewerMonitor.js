@@ -23,7 +23,6 @@ define(function(require, exports, module)
 					  , s.InviteStart
 					  , s.InviteEnd
 					  , s.Eta
-					  , s.EtaRange
 					  , s.Message
 					  , s.Name
 					  , s.Phase

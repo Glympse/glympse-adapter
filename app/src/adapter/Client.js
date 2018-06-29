@@ -550,6 +550,7 @@ define(function(require, exports, module)
 				case m.GroupStatus:
 				case m.OrgObjects:
 				case m.EtaInfo:
+				case m.InviteEta:
 				{
 					sendEvent(msg, args);
 					break;

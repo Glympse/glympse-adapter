@@ -170,6 +170,11 @@ define(function(require, exports, module)
 					getEtaInfo(args);
 					break;
 				}
+				case r.getInviteEta:
+				{
+					getInviteEta(args);
+					break;
+				}
 			}
 		};
 
@@ -260,6 +265,26 @@ define(function(require, exports, module)
 					dbg('> ETA results:', result);
 
 					controller.notify(m.EtaInfo, result);
+				});
+		}
+
+		function getInviteEta(inviteCode)
+		{
+			if (!inviteCode)
+			{
+				dbg('invite\'s ETA Info: no invite-code provided');
+
+				controller.notify(m.InviteEta, {
+					result: null
+				});
+
+				return;
+			}
+			var requestUrl = svr + 'invites/' + inviteCode + '/eta';
+			ajax.get(requestUrl, null, account)
+				.then(function(response)
+				{
+					controller.notify(m.InviteEta, response);
 				});
 		}
 

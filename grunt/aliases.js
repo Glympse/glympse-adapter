@@ -37,6 +37,10 @@ module.exports = function (grunt) {
 	'copy:build'
   ]);
 
+  grunt.registerTask('jsdoc', [
+    'jsdoc'
+  ]);
+
   grunt.registerTask('lint', [
     'jscs',
     'eslint'

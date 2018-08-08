@@ -5,6 +5,9 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
+# directory used by `jsdoc` tool to generate JS documentation for developers
+docs
+
 # Node Files #
 ##############
 node_modules

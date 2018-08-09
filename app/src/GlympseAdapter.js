@@ -1,3 +1,9 @@
+/**
+ * @namespace adapter
+ * @namespace adapter.models
+ * @namespace adapter.common
+ */
+
 // App entry point
 define(function(require, exports, module)
 {
@@ -24,6 +30,13 @@ define(function(require, exports, module)
 	}
 
 
+	/**
+	 * @class adapter.GlympseAdapter
+	 * @memberOf adapter
+	 * @param {Object} controller Instance of controller with cmd(msg, args) and notify(msg, args) methods
+	 * @param {Object} cfg Adapter configuration
+	 * @constructor
+	 */
 	function GlympseAdapter(controller, cfg)
 	{
 		var adapterLabel = 'GlympseAdapter';
@@ -84,6 +97,11 @@ define(function(require, exports, module)
 		// PUBLICS
 		///////////////////////////////////////////////////////////////////////////////
 
+		/**
+		 * @method
+		 * @param {Object} cfgNew Viewer config
+		 * @param {HtmlElement} mapHtmlElement Viewer container element
+		 */
 		this.loadViewer = function(cfgNew, mapHtmlElement)
 		{
 			if (!glympserLoader)

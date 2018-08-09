@@ -24,7 +24,13 @@ define(function(require, exports, module)
 	var anonymousUserName = 'viewer';
 	var anonymousPassword = 'password';
 
-	// Exported class
+	/**
+	 * @class Account
+	 * @memberOf adapter.models
+	 * @param {Object} controller
+	 * @param {Object} cfg
+	 * @constructor
+	 */
 	function Account(controller, cfg)
 	{
 		// consts
@@ -75,6 +81,10 @@ define(function(require, exports, module)
 		// PUBLICS
 		///////////////////////////////////////////////////////////////////////////////
 
+		/**
+		 * Initializes account model.
+		 * @returns {boolean} whether account was initialized or not
+		 */
 		this.init = function()
 		{
 			getSettings();
@@ -128,6 +138,10 @@ define(function(require, exports, module)
 			return false;
 		};
 
+		/**
+		 * Generates token
+		 * @param {Function} callback
+		 */
 		this.generateToken = function(callback)
 		{
 			token = null;

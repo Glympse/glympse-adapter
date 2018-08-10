@@ -1,7 +1,5 @@
 /**
  * @namespace adapter
- * @namespace adapter.models
- * @namespace adapter.common
  */
 
 // App entry point

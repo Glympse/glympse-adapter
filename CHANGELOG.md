@@ -2,6 +2,7 @@
 
 version |date        |notes
 :-------|:-----------|:------
+2.13.1  | 2018/08/16 | Added `grunt jsdoc` task + some jsdoc annotations 
 2.13.0  | 2018/06/29 | Add interface to access eta_range property, remove as data stream property
 2.12.2  | 2018/06/21 | Added eta_range data stream property
 2.12.1  | 2018/05/17 | Added ability to skip "sandbox" using on iframe (host-mode)

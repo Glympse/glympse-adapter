@@ -64,8 +64,6 @@ define("oasis/message_channel",
       send: mustImplement('OasisPort', 'send'),
 
       /**
-        @private
-
         Adapters should implement this to start receiving messages from the
         other side of the connection.
 
@@ -75,8 +73,6 @@ define("oasis/message_channel",
       start: mustImplement('OasisPort', 'start'),
 
       /**
-        @private
-
         Adapters should implement this to stop receiving messages from the
         other side of the connection.
       */

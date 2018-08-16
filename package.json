@@ -45,6 +45,7 @@
     "grunt-contrib-watch": "^1.0.0",
     "grunt-eslint": "^19.0.0",
     "grunt-jscs": "^3.0.1",
+    "grunt-jsdoc": "^2.2.1",
     "grunt-newer": "^1.2.0",
     "grunt-processhtml": "^0.4.1",
     "grunt-rev": "^0.1.0",

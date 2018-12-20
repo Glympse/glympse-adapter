@@ -188,7 +188,7 @@ define(function(require, exports, module)
 
 			xhr.open('GET', url, true);
 			xhr.responseType = 'arraybuffer';
-			xhr.setRequestHeader('x-force-header', 'true');
+			xhr.setRequestHeader('access-control-allow-origin', '*');
 
 			xhr.onload = function()
 			{

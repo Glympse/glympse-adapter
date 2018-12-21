@@ -186,9 +186,8 @@ define(function(require, exports, module)
 			var that = this;
 			var xhr = new XMLHttpRequest();
 
-			xhr.open('GET', url, true);
+			xhr.open('GET', url + "?x=y", true);
 			xhr.responseType = 'arraybuffer';
-			xhr.setRequestHeader('x-force-header', 'true');
 
 			xhr.onload = function()
 			{
